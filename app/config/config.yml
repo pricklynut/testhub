@@ -72,3 +72,24 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: '%kernel.debug%'
+    filters:
+        cssrewrite: ~
+    assets:
+        jquery_min_js:
+            inputs:
+                - %kernel.root_dir%/../vendor/components/jquery/jquery.min.js
+            output: js/jquery.min.js
+        bootstrap_min_js:
+            inputs:
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/dist/js/bootstrap.min.js
+            output: js/bootstrap.min.js
+        bootstrap_min_css:
+            inputs:
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/dist/css/bootstrap.min.css
+            filters:
+                - cssrewrite
+            output: css/bootstrap.min.css

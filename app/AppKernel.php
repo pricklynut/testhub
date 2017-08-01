@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new AppBundle\AppBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
+            new Symfony\Bundle\AsseticBundle\AsseticBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
