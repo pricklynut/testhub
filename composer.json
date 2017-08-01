@@ -45,7 +45,8 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
         ],
         "post-install-cmd": [
-            "@symfony-scripts"
+            "@symfony-scripts",
+            "php bin/console assetic:dump --no-debug"
         ],
         "post-update-cmd": [
             "@symfony-scripts"
