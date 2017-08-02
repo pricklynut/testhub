@@ -1,13 +1,47 @@
 <!DOCTYPE html>
 <html>
+
     <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <meta charset="UTF-8">
+        <title>
+            TestHub &mdash;
+            {% block title %}
+                Сервис для создания и прохождения тестов
+            {% endblock %}
+        </title>
+
+        {% block stylesheets %}
+            {% stylesheets 'css/bootstrap.min.css' %}
+                <link rel="stylesheet" href="{{ asset(asset_url) }}">
+            {% endstylesheets %}
+        {% endblock stylesheets %}
+
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     </head>
+
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        {% block body %}
+            <nav class="navbar navbar-default">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a href="{{ path('homepage') }}" class="navbar-brand">
+                            TestHub
+                        </a>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="{{ path('homepage') }}">Вход с паролем</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        {% endblock %}
+
+        {% block javascripts %}
+            {% javascripts 'js/jquery.min.js' 'js/bootstrap.min.js' %}
+                <script src="{{ asset(asset_url) }}"></script>
+            {% endjavascripts %}
+        {% endblock javascripts %}
     </body>
+
 </html>
