@@ -17,36 +17,42 @@ class LoadTestData extends AbstractFixture implements OrderedFixtureInterface
         $test1->assignAuthor($this->getReference('user1'));
         $test1->setTimeLimit(5);
         $test1->attachTag($this->getReference('tag1'));
+        $test1->attachTag($this->getReference('tag2'));
         $test1->attachTag($this->getReference('tag3'));
-        $test1->setCreated(new \DateTime());
+        $test1->attachTag($this->getReference('tag4'));
+        $test1->setCreated(new \DateTime('2017-08-01 20:14:35'));
         $manager->persist($test1);
 
         $test2 = new Test();
-        $test2->setTitle('Тест 2');
+        $test2->setTitle('Тест по арифметике');
         $test2->assignAuthor($this->getReference('user1'));
+        $test2->attachTag($this->getReference('tag4'));
         $test2->attachTag($this->getReference('tag5'));
-        $test2->setCreated(new \DateTime());
+        $test2->attachTag($this->getReference('tag10'));
+        $test2->setCreated(new \DateTime('2017-08-01 21:50:44'));
         $manager->persist($test2);
 
         $test3 = new Test();
-        $test3->setTitle('Тест 3');
+        $test3->setTitle('Электродинамика');
         $test3->assignAuthor($this->getReference('user2'));
-        $test3->setCreated(new \DateTime());
+        $test3->attachTag($this->getReference('tag7'));
+        $test3->attachTag($this->getReference('tag9'));
+        $test3->attachTag($this->getReference('tag8'));
+        $test3->setCreated(new \DateTime('2017-08-01 23:01:17'));
         $manager->persist($test3);
 
         $test4 = new Test();
-        $test4->setTitle('Тест 4');
+        $test4->setTitle('Основы космических полетов');
         $test4->assignAuthor($this->getReference('user1'));
-        $test4->attachTag($this->getReference('tag1'));
-        $test4->attachTag($this->getReference('tag3'));
-        $test4->setCreated(new \DateTime());
+        $test4->attachTag($this->getReference('tag6'));
+        $test4->attachTag($this->getReference('tag2'));
+        $test4->setCreated(new \DateTime('2017-08-02 10:28:30'));
         $manager->persist($test4);
 
         $test5 = new Test();
         $test5->setTitle('Тест 5');
         $test5->assignAuthor($this->getReference('user2'));
-        $test5->attachTag($this->getReference('tag5'));
-        $test5->setCreated(new \DateTime());
+        $test5->setCreated(new \DateTime('2017-08-02 10:32:59'));
         $manager->persist($test5);
 
         $test6 = new Test();
@@ -54,14 +60,14 @@ class LoadTestData extends AbstractFixture implements OrderedFixtureInterface
         $test6->assignAuthor($this->getReference('user1'));
         $test6->attachTag($this->getReference('tag2'));
         $test6->attachTag($this->getReference('tag4'));
-        $test6->setCreated(new \DateTime());
+        $test6->setCreated(new \DateTime('2017-08-01 13:25:48'));
         $manager->persist($test6);
 
         $test7 = new Test();
         $test7->setTitle('Тест 7');
         $test7->assignAuthor($this->getReference('user1'));
         $test7->attachTag($this->getReference('tag4'));
-        $test7->setCreated(new \DateTime());
+        $test7->setCreated(new \DateTime('2017-08-01 16:04:11'));
         $manager->persist($test7);
 
         $manager->flush();
