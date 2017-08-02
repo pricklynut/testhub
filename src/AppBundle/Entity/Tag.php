@@ -32,7 +32,7 @@ class Tag
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Test", inversedBy="tags")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Test", mappedBy="tags")
      * @ORM\JoinTable(name="test_to_tag")
      */
     private $tests;
