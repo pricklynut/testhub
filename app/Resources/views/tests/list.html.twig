@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+
+    <div class="wrapper container">
+        <div class="row">
+            <div class="content col-md-9 col-sm-8 col-xs-12">
+                <h1>Поиск тестов</h1>
+                <form action="">
+                    <div class="form-group">
+                        <input type="text" name="search" class="form-control"
+                               placeholder="Название или тема...">
+                    </div>
+                </form>
+                {% include 'default/tests_list.html.twig' %}
+                {% include 'pager/pager.html.twig' %}
+            </div>
+            {% include 'tests/sidebar_tests_page.html.twig' %}
+        </div>
+    </div>
+{% endblock body %}

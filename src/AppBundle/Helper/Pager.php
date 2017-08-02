@@ -151,6 +151,9 @@ class Pager
      */
     public function getPreviousPage()
     {
+        if ($this->getCurrentPage() === 1) {
+            return 1;
+        }
         return $this->getCurrentPage() - 1;
     }
 
@@ -167,6 +170,9 @@ class Pager
      */
     public function getNextPage()
     {
+        if ($this->getCurrentPage() === $this->getTotalPages()) {
+            return $this->getCurrentPage();
+        }
         return $this->getCurrentPage() + 1;
     }
 

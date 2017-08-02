@@ -14,12 +14,28 @@ class TestRepository extends EntityRepository
      * @param int $limit
      * @return Paginator
      */
-    public function getRecentTests($limit = 5)
+    public function getRecentTests(int $limit = 5)
     {
         $dql = "SELECT test, tags FROM AppBundle\Entity\Test test
                 LEFT JOIN test.tags tags ORDER BY test.created DESC";
         $query = $this->getEntityManager()->createQuery($dql);
         $query->setMaxResults($limit);
+
+        return new Paginator($query, $fetchJoin = true);
+    }
+
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @return Paginator
+     */
+    public function findByPage(int $page = 1, int $perPage = 5)
+    {
+        $dql = "SELECT test, tags FROM AppBundle\Entity\Test test
+                LEFT JOIN test.tags tags ORDER BY test.created DESC";
+        $query = $this->getEntityManager()->createQuery($dql);
+        $query->setMaxResults($perPage);
+        $query->setFirstResult(($page - 1)*$perPage);
 
         return new Paginator($query, $fetchJoin = true);
     }

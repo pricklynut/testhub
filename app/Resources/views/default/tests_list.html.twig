@@ -1,0 +1,32 @@
+<div class="tests panel panel-default">
+
+    <ul class="list-group">
+        {% for item in tests %}
+            <li class="test-item list-group-item"
+                style="box-sizing:content-box;height: 66px;padding:10px">
+                <div class="test-title-tags pull-left col-md-10">
+                    <h3 class="title" style="margin-top:10px;margin-bottom: 2px;">{{ item.title }}</h3>
+                    {% if item.tags is not empty %}
+                        <div class="tags">
+                            {% for tag in item.tags %}
+                                <span class="tag-item">
+                                    <a href="{{ path('homepage') }}"
+                                    >#{{ tag.name }}</a>
+                                </span>
+                            {%  endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="test-start pull-right col-md-2">
+                    <div style="line-height: 66px;text-align: center;">
+                        <a href="{{ path('homepage') }}">
+                                    <span class="badge"
+                                          style="font-size: 28px;">&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+</div>
