@@ -20,7 +20,7 @@ class LoadTestData extends AbstractFixture implements OrderedFixtureInterface
         $test1->attachTag($this->getReference('tag2'));
         $test1->attachTag($this->getReference('tag3'));
         $test1->attachTag($this->getReference('tag4'));
-        $test1->setCreated(new \DateTime('2017-08-01 20:14:35'));
+        $test1->setCreated(new \DateTime('2017-08-02 16:04:11'));
         $manager->persist($test1);
 
         $test2 = new Test();
@@ -29,7 +29,7 @@ class LoadTestData extends AbstractFixture implements OrderedFixtureInterface
         $test2->attachTag($this->getReference('tag4'));
         $test2->attachTag($this->getReference('tag5'));
         $test2->attachTag($this->getReference('tag10'));
-        $test2->setCreated(new \DateTime('2017-08-01 21:50:44'));
+        $test2->setCreated(new \DateTime('2017-08-02 13:25:48'));
         $manager->persist($test2);
 
         $test3 = new Test();
@@ -38,7 +38,7 @@ class LoadTestData extends AbstractFixture implements OrderedFixtureInterface
         $test3->attachTag($this->getReference('tag7'));
         $test3->attachTag($this->getReference('tag9'));
         $test3->attachTag($this->getReference('tag8'));
-        $test3->setCreated(new \DateTime('2017-08-01 23:01:17'));
+        $test3->setCreated(new \DateTime('2017-08-02 10:32:59'));
         $manager->persist($test3);
 
         $test4 = new Test();
@@ -52,7 +52,7 @@ class LoadTestData extends AbstractFixture implements OrderedFixtureInterface
         $test5 = new Test();
         $test5->setTitle('Тест 5');
         $test5->assignAuthor($this->getReference('user2'));
-        $test5->setCreated(new \DateTime('2017-08-02 10:32:59'));
+        $test5->setCreated(new \DateTime('2017-08-01 23:01:17'));
         $manager->persist($test5);
 
         $test6 = new Test();
@@ -60,14 +60,14 @@ class LoadTestData extends AbstractFixture implements OrderedFixtureInterface
         $test6->assignAuthor($this->getReference('user1'));
         $test6->attachTag($this->getReference('tag2'));
         $test6->attachTag($this->getReference('tag4'));
-        $test6->setCreated(new \DateTime('2017-08-01 13:25:48'));
+        $test6->setCreated(new \DateTime('2017-08-01 21:50:44'));
         $manager->persist($test6);
 
         $test7 = new Test();
         $test7->setTitle('Тест 7');
         $test7->assignAuthor($this->getReference('user1'));
         $test7->attachTag($this->getReference('tag4'));
-        $test7->setCreated(new \DateTime('2017-08-01 16:04:11'));
+        $test7->setCreated(new \DateTime('2017-08-01 20:14:35'));
         $manager->persist($test7);
 
         $manager->flush();
