@@ -20,12 +20,13 @@ class TestsController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $testRepo = $em->getRepository('AppBundle\Entity\Test');
-        $pager = new Pager($page, $testRepo->getTotalCount());
+        $pager = new Pager($page, $testRepo->getTotalCount($search));
         $tests = $testRepo->findByPage($page, $search, $pager->getPerPage());
 
         return $this->render('tests/list.html.twig', [
             'tests' => $tests,
             'pager' => $pager,
+            'search' => $search,
         ]);
     }
 }

@@ -191,32 +191,12 @@ class Pager
         return $this->getCurrentPage() + 1;
     }
 
-    /* public function setFirstAndLastPage()
+    /**
+     * @return bool
+     */
+    public function hasPagination()
     {
-        if ($this->getTotalPages() <= $this->linksOnPage) {
-            $this->firstPage = 1;
-            $this->lastPage = $this->getTotalPages();
-            return;
-        }
-
-        if (($this->currentPage % $this->linksOnPage) === 0) {
-            $firstPage = intval(floor($this->currentPage/$this->linksOnPage) - 1)
-                         * $this->linksOnPage + 1;
-        } else {
-            $firstPage = intval(floor($this->currentPage/$this->linksOnPage))
-                         * $this->linksOnPage + 1;
-        }
-
-        $lastPage = $firstPage + $this->linksOnPage - 1;
-
-        if ($this->currentPage + $this->linksOnPage - 1 > $this->getTotalPages()) {
-            $lastPage = $this->getTotalPages();
-            $firstPage = $lastPage - $this->linksOnPage + 1;
-        }
-
-        $this->firstPage = $firstPage;
-        $this->lastPage = $lastPage;
+        return $this->getTotalPages() > 1;
     }
-    */
 
 }

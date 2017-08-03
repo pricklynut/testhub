@@ -57,8 +57,12 @@ class TestRepository extends EntityRepository
     /**
      * @return mixed
      */
-    public function getTotalCount()
+    public function getTotalCount(string $search = null)
     {
+        if (!empty($search)) {
+            return count($this->searchIds($search));
+        }
+
         $dql = "SELECT COUNT(t.id) FROM AppBundle\Entity\Test t";
         $query = $this->getEntityManager()->createQuery($dql);
 
@@ -100,8 +104,9 @@ class TestRepository extends EntityRepository
         $stmt->bindValue(':search_string', $searchString, \PDO::PARAM_STR);
         $stmt->bindValue(':search_limit', self::SEARCH_LIMIT, \PDO::PARAM_INT);
         $stmt->execute();
+        $stmt->setFetchMode(\PDO::FETCH_NUM);
 
-        return $stmt->fetchColumn();
+        return $stmt->fetchAll();
     }
 
     /**
