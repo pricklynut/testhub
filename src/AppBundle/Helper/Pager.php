@@ -11,16 +11,6 @@ class Pager
     /**
      * @var int
      */
-    private $firstPage;
-
-    /**
-     * @var int
-     */
-    private $lastPage;
-
-    /**
-     * @var int
-     */
     private $perPage = 5;
 
     /**
@@ -47,7 +37,7 @@ class Pager
     {
         $this->currentPage = $currentPage;
         $this->totalCount = $totalCount;
-        $this->setFirstAndLastPage();
+        //$this->setFirstAndLastPage();
     }
 
     /**
@@ -127,7 +117,20 @@ class Pager
      */
     public function getFirstPage()
     {
-        return $this->firstPage;
+        if ($this->getCurrentPage() <= $this->getLinksOnPage()) {
+            return 1;
+        }
+
+        if (
+            $this->getCurrentPage() + $this->getLinksOnPage()
+            >
+            $this->getTotalPages()
+        ) {
+            return $this->getTotalPages() - $this->getLinksOnPage() + 1;
+        }
+
+        return intval(floor($this->getCurrentPage()/$this->getLinksOnPage()))
+            * $this->getLinksOnPage() + 1;
     }
 
     /**
@@ -135,7 +138,19 @@ class Pager
      */
     public function getLastPage()
     {
-        return $this->lastPage;
+        if ($this->getCurrentPage() <= $this->getLinksOnPage()) {
+            return $this->getTotalPages();
+        }
+
+        if (
+            $this->getCurrentPage() + $this->getLinksOnPage()
+            >
+            $this->getTotalPages()
+        ) {
+            return $this->getTotalPages();
+        }
+
+        return $this->getFirstPage() + $this->getLinksOnPage() - 1;
     }
 
     /**
@@ -176,7 +191,7 @@ class Pager
         return $this->getCurrentPage() + 1;
     }
 
-    public function setFirstAndLastPage()
+    /* public function setFirstAndLastPage()
     {
         if ($this->getTotalPages() <= $this->linksOnPage) {
             $this->firstPage = 1;
@@ -202,5 +217,6 @@ class Pager
         $this->firstPage = $firstPage;
         $this->lastPage = $lastPage;
     }
+    */
 
 }
