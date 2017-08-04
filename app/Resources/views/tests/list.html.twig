@@ -15,7 +15,13 @@
                     </div>
                 </form>
 
-                {% include 'default/tests_list.html.twig' %}
+                {% if tests is not empty %}
+                    {% include 'default/tests_list.html.twig' %}
+                {% else %}
+                    <div class="panel panel-default">
+                        <div class="panel-body bg-warning">Ничего не найдено</div>
+                    </div>
+                {% endif %}
 
                 {% if pager.hasPagination %}
                     {% include 'pager/pager.html.twig' %}

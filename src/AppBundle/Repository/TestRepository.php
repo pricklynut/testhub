@@ -44,9 +44,9 @@ class TestRepository extends EntityRepository
 
         if (!empty($search)) {
             $searchIds = $this->searchIds($search);
-        }
-
-        if (!empty($searchIds)) {
+            if (empty($searchIds)) {
+                return null;
+            }
             $qb->where('test.id IN (:ids)')
                 ->setParameter('ids', $searchIds);
         }
