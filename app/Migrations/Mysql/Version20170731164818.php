@@ -26,7 +26,7 @@ class Version20170731164818 extends AbstractMigration
                 created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (author_id) REFERENCES users (id)
                     ON UPDATE CASCADE ON DELETE CASCADE
-            )
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
         ");
     }
 

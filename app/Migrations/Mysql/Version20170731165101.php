@@ -22,15 +22,15 @@ class Version20170731165101 extends AbstractMigration
                 price TINYINT UNSIGNED NOT NULL DEFAULT 1,
                 test_id INT UNSIGNED NOT NULL,
                 type ENUM (
-                    'string_typin',
-                    'number_typin',
+                    'string_typein',
+                    'number_typein',
                     'single_variant',
                     'multiple_variants'
                 ) NOT NULL,
                 serial_number TINYINT UNSIGNED NOT NULL,
                 FOREIGN KEY (test_id) REFERENCES tests (id)
                     ON UPDATE CASCADE ON DELETE CASCADE
-            )
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
         ");
     }
 

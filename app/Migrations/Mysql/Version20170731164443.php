@@ -21,7 +21,7 @@ class Version20170731164443 extends AbstractMigration
                 username VARCHAR(255),
                 guest_key VARCHAR(255) NOT NULL,
                 registered TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-            )
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
         ");
     }
 

@@ -15,6 +15,13 @@ class Version20170731165358 extends AbstractMigration
      */
     public function up(Schema $schema)
     {
+        /*
+         * Bug in mysql 5.7, table cannot has more than 1 timestamp column
+         * https://bugs.mysql.com/bug.php?id=80163
+         */
+        // $this->addSql("set @@sql_mode = ''");
+        $this->addSql("SET GLOBAL sql_mode = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'");
+
         $this->addSql("
             CREATE TABLE attempts (
                 id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -28,7 +35,7 @@ class Version20170731165358 extends AbstractMigration
                     ON UPDATE CASCADE ON DELETE CASCADE,
                 FOREIGN KEY (test_id) REFERENCES tests (id)
                     ON UPDATE CASCADE ON DELETE CASCADE
-            );
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
         ");
     }
 

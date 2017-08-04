@@ -24,7 +24,7 @@ class Version20170731165242 extends AbstractMigration
                 question_id BIGINT UNSIGNED NOT NULL,
                 FOREIGN KEY (question_id) REFERENCES questions (id)
                     ON UPDATE CASCADE ON DELETE CASCADE
-            )
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
         ");
     }
 
