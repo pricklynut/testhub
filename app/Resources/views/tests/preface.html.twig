@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+
+<div class="wrapper container">
+    <div class="row">
+
+        <div class="content col-md-9 col-sm-8 col-xs-12">
+            <h1>{{ test.title }}</h1>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p class="description"><em>{{ test.description }}</em></p>
+                    <p>
+                        В тесте
+                            <strong>{{ questionsCount }}</strong> вопросов,
+                            за которые можно набрать
+                            до <strong>{{ totalPoints }}</strong> баллов.
+                    </p>
+
+                    {% if test.timeLimit is not empty %}
+                        <p>На весь тест дается
+                            <strong>{{ test.timeLimit }}</strong> минут.
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="buttons">
+                <a href="{{ path('start_test', {testId: test.id}) }}" class="btn btn-default pull-right">Начать тест &raquo;</a>
+
+                {% if activeAttempt is not empty %}
+                    <a href="/" class="btn btn-default pull-left">&laquo; Продолжить</a>
+                {% endif %}
+            </div>
+
+        </div>
+
+        {% include 'tests/sidebar_test_preface.html.twig' %}
+    </div>
+
+</div>
+{% endblock body %}

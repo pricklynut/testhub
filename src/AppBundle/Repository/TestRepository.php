@@ -70,6 +70,30 @@ class TestRepository extends EntityRepository
     }
 
     /**
+     * @param int $testId
+     * @return bool|string
+     */
+    public function getQuestionsCount(int $testId)
+    {
+        $sql = "SELECT COUNT(*) FROM questions WHERE test_id = :test_id";
+        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $stmt->bindValue(':test_id', $testId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn();
+    }
+
+    public function getTotalPoints($testId)
+    {
+        $sql = "SELECT SUM(price) FROM questions WHERE test_id = :test_id";
+        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $stmt->bindValue(':test_id', $testId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn();
+    }
+
+    /**
      * @param string $phrase
      * @return mixed
      */
@@ -109,6 +133,10 @@ class TestRepository extends EntityRepository
         return $stmt->fetchAll();
     }
 
+    /**
+     * @param string $searchString
+     * @return array
+     */
     private function mysqlSearch(string $searchString)
     {
         $sql = "SELECT id FROM tests

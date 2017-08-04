@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\Collection;
  * Attempt
  *
  * @ORM\Table(name="attempts")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\AttemptRepository")
  */
 class Attempt
 {
@@ -40,7 +40,7 @@ class Attempt
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="finished", type="datetime", nullable=false)
+     * @ORM\Column(name="finished", type="datetime")
      */
     private $finished;
 
@@ -196,6 +196,10 @@ class Attempt
         return $this->id;
     }
 
+    public function finish()
+    {
+        $this->status = self::STATUS_FINISHED;
+    }
 
 }
 
