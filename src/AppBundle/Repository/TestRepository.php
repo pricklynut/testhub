@@ -84,7 +84,7 @@ class TestRepository extends EntityRepository
             return $this->postgresSearch($searchString);
         }
 
-        return $this->mysqlSearch($searchString);
+        return $this->mysqlSearch($phrase);
     }
 
     /**
@@ -99,6 +99,22 @@ class TestRepository extends EntityRepository
                   fulltext_search,
                   to_tsquery(:search_string)
                 ) DESC LIMIT :search_limit";
+
+        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $stmt->bindValue(':search_string', $searchString, \PDO::PARAM_STR);
+        $stmt->bindValue(':search_limit', self::SEARCH_LIMIT, \PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->setFetchMode(\PDO::FETCH_NUM);
+
+        return $stmt->fetchAll();
+    }
+
+    private function mysqlSearch(string $searchString)
+    {
+        $sql = "SELECT id FROM tests
+                WHERE MATCH(title, description) AGAINST(:search_string)
+                ORDER BY MATCH(title, description) AGAINST(:search_string) DESC
+                LIMIT :search_limit";
 
         $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
         $stmt->bindValue(':search_string', $searchString, \PDO::PARAM_STR);
