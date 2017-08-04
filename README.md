@@ -25,6 +25,8 @@ Installation steps:
         $ composer install  
         ```
   1. In `app/config/parameters.yml` set your db connection settings
+  1. Run migrations `$ php bin/console doctrine:migrations:migrate -n`
+  1. Optionally load test fixtures `$ php bin/console doctrine:fixtures:load -n`
   
 Configuration (optional).
   * If you encounter with symfony cache permissions problem, its quite common issue, you might solve this with
