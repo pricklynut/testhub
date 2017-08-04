@@ -32,7 +32,7 @@ class Variant
     /**
      * @var integer
      *
-     * @ORM\Column(name="precision", type="integer", nullable=true)
+     * @ORM\Column(name="`precision`", type="integer", nullable=true)
      */
     private $precision;
 
