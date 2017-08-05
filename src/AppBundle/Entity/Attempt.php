@@ -201,5 +201,16 @@ class Attempt
         $this->status = self::STATUS_FINISHED;
     }
 
+    public function getTimeLeft()
+    {
+        $wasted = $this->started->diff(new \DateTime());
+
+        $minutes = $wasted->days * 24 * 60;
+        $minutes += $wasted->h * 60;
+        $minutes += $wasted->i;
+
+        return $this->getTest()->getTimeLimit() - $minutes;
+    }
+
 }
 

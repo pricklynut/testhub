@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+
+<div class="wrapper container">
+    <div class="row">
+        <div class="content col-md-8 col-sm-12">
+            <h1>{{ currentQuestion.test.title }}</h1>
+            {% if currentQuestion.test.timeLimit is not null %}
+                <p class="time_last">Осталось {{ attempt.timeLeft }} минут.</p>
+            {% endif %}
+
+            <p class="serial_number">
+                Вопрос {{ currentQuestion.serialNumber }}
+                из {{ questionsCount }}
+            </p>
+
+            <p class="question">{{ currentQuestion.question }}</p>
+
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_widget(form.answer, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(form.answer) }}
+                </div>
+                {{ form_widget(form.save, { 'attr': {'class': 'btn btn-default pull-right'} }) }}
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

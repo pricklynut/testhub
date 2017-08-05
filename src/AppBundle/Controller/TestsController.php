@@ -2,9 +2,14 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Answer;
 use AppBundle\Entity\Attempt;
+use AppBundle\Entity\Question;
 use AppBundle\Entity\Test;
 use AppBundle\Entity\User;
+use AppBundle\Form\NumberFormType;
+use AppBundle\Form\VariantFormType;
+use AppBundle\Form\StringFormType;
 use AppBundle\Helper\HashGenerator;
 use AppBundle\Helper\Pager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -108,9 +113,135 @@ class TestsController extends Controller
      *     requirements={"testId": "\d+", "serialNumber": "\d+"}
      * )
      */
-    public function questionAction($testId, $serialNumber)
+    public function questionAction($testId, $serialNumber, Request $request)
     {
-        var_dump($testId, $serialNumber);die;
+        $em = $this->getDoctrine()->getManager();
+        $guestKey = $request->cookies->get('guest_key');
+        $user = $em->getRepository('AppBundle\Entity\User')
+            ->findOneBy(['guestKey' => $guestKey]);
+
+        if ( !$this->canUserPassTest(intval($testId), $user) ) {
+            return $this->redirectToRoute('test_preface', ['testId' => $testId]);
+        }
+
+        $attemptRepo = $em->getRepository('AppBundle\Entity\Attempt');
+        $attempt = $attemptRepo->findActiveAttempt($user);
+
+        $currentQuestion = $attemptRepo
+            ->getCurrentQuestion(intval($testId), intval($serialNumber));
+        $nextQuestionNumber = $attemptRepo
+            ->getNextQuestionNumber($attempt, $testId, $serialNumber);
+
+        $testRepo = $em->getRepository('AppBundle\Entity\Test');
+        $questionsCount = $testRepo->getQuestionsCount(intval($testId));
+
+        $answer = new Answer();
+
+        $form = $this->createFormByQuestion($currentQuestion, $answer);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->populateAndPersistAnswers($currentQuestion, $attempt, $form->getData());
+            $em->flush();
+            // todo: redirect to the next question
+        }
+
+        return $this->render('tests/question.html.twig', [
+            'currentQuestion' => $currentQuestion,
+            'nextQuestionNumber' => $nextQuestionNumber,
+            'attempt' => $attempt,
+            'questionsCount' => $questionsCount,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    private function populateAndPersistAnswers($question, $attempt, $answersData)
+    {
+        switch ($question->getType()) {
+            case Question::TYPE_NUMBER_TYPEIN:
+            case Question::TYPE_STRING_TYPEIN:
+                $answer = $answersData;
+                $answer->setAttempt($attempt);
+                $answer->setQuestion($question);
+                $answer->setReceived(new \DateTime());
+                $this->getDoctrine()->getManager()->persist($answer);
+                break;
+            case Question::TYPE_SINGLE_VARIANT:
+                $model = new Answer();
+                $model->setQuestion($question);
+                $model->setAttempt($attempt);
+                $model->setReceived(new \DateTime());
+                $model->setAnswer($answersData['answer']);
+                $this->getDoctrine()->getManager()->persist($model);
+                break;
+            case Question::TYPE_MULTIPLE_VARIANTS:
+                foreach ($answersData['answer'] as $answerText) {
+                    $answer = new Answer();
+                    $answer->setQuestion($question);
+                    $answer->setAttempt($attempt);
+                    $answer->setReceived(new \DateTime());
+                    $answer->setAnswer($answerText);
+                    $this->getDoctrine()->getManager()->persist($answer);
+                }
+                break;
+        }
+    }
+
+    /**
+     * @param Question $question
+     * @param Answer $answer
+     * @return \Symfony\Component\Form\Form
+     */
+    private function createFormByQuestion(Question $question, Answer $answer)
+    {
+        $data = [
+            'choices' => $question->getVariantsList(),
+        ];
+        $data['multiple'] = true;
+        $data['expanded'] = true;
+
+        switch ($question->getType()) {
+            case Question::TYPE_NUMBER_TYPEIN:
+                return $this->createForm(NumberFormType::class, $answer);
+            case Question::TYPE_STRING_TYPEIN:
+                return $this->createForm(StringFormType::class, $answer);
+            case Question::TYPE_SINGLE_VARIANT:
+                $data['multiple'] = false;
+                return $this->createForm(VariantFormType::class, $data);
+            case Question::TYPE_MULTIPLE_VARIANTS:
+                return $this->createForm(VariantFormType::class, $data);
+        }
+    }
+
+    /**
+     * User can pass test in the following cases:
+     * - if she has a guest_key cookie
+     * - and if she has an active attempt
+     * - and if the active attempt's test_id equals to the current test
+     *
+     * @param Request $request
+     * @param $testId
+     * @return bool
+     */
+    private function canUserPassTest(int $testId, User $user = null)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if (empty($user)) {
+            return false;
+        }
+
+        $activeAttempt = $em->getRepository('AppBundle\Entity\Attempt')
+            ->findActiveAttempt($user);
+
+        if (
+            empty($activeAttempt)
+            or ($activeAttempt->getTest()->getId() !== $testId))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /**

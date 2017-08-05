@@ -219,6 +219,20 @@ class Question
         return $this->variants;
     }
 
+    /**
+     * @return array
+     */
+    public function getVariantsList()
+    {
+        $list = [];
+        $models = $this->getVariants();
+
+        foreach ($models as $model) {
+            $list[$model->getAnswer()] = $model->getAnswer();
+        }
+
+        return $list;
+    }
 
 }
 

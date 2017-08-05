@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Answer
@@ -25,6 +26,7 @@ class Answer
      * @var string
      *
      * @ORM\Column(name="answer", type="string", length=255, nullable=false)
+     * @Assert\NotBlank()
      */
     private $answer;
 
@@ -66,9 +68,9 @@ class Answer
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getAnswer(): string
+    public function getAnswer()
     {
         return $this->answer;
     }
@@ -130,7 +132,6 @@ class Answer
         $question->addAnswer($this);
         $this->question = $question;
     }
-
 
 }
 
