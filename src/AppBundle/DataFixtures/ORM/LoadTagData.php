@@ -51,6 +51,14 @@ class LoadTagData extends AbstractFixture implements OrderedFixtureInterface
         $tag10->setName('числа');
         $manager->persist($tag10);
 
+        $tag11 = new Tag();
+        $tag11->setName('японский язык');
+        $manager->persist($tag11);
+
+        $tag12 = new Tag();
+        $tag12->setName('лингвистика');
+        $manager->persist($tag12);
+
         $manager->flush();
 
         $this->addReference('tag1', $tag1);
@@ -63,6 +71,8 @@ class LoadTagData extends AbstractFixture implements OrderedFixtureInterface
         $this->addReference('tag8', $tag8);
         $this->addReference('tag9', $tag9);
         $this->addReference('tag10', $tag10);
+        $this->addReference('tag11', $tag11);
+        $this->addReference('tag12', $tag12);
     }
 
     public function getOrder()

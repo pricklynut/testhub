@@ -70,9 +70,21 @@ class LoadTestData extends AbstractFixture implements OrderedFixtureInterface
         $test7->setCreated(new \DateTime('2017-08-01 20:14:35'));
         $manager->persist($test7);
 
+        $test8 = new Test();
+        $test8->setTitle('Тест на знание хираганы');
+        $test8->setDescription('Проверьте, насколько хорошо вы знаете азбуку '
+                                .'хирагана, пройдя этот тест.');
+        $test8->assignAuthor($this->getReference('user1'));
+        $test8->setTimeLimit(15);
+        $test8->attachTag($this->getReference('tag11'));
+        $test8->attachTag($this->getReference('tag12'));
+        $test8->setCreated(new \DateTime('2017-08-02 18:23:57'));
+        $manager->persist($test8);
+
         $manager->flush();
 
         $this->addReference('test1', $test1);
+        $this->addReference('test8', $test8);
     }
 
     public function getOrder()
