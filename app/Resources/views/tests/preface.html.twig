@@ -27,11 +27,26 @@
                 </div>
             </div>
 
+            {% if activeAttempt is not empty %}
+                <p class="alert alert-warning">
+                    У вас есть незавершенная попытка прохождения теста
+                    <em>"{{ activeAttempt.test.title }}"</em>. Если хотите продолжить
+                    прохождение этого теста, нажмите кнопку <strong>Продолжить</strong>.
+                    Начало нового прохождения автоматически завершает предыдущие
+                    попытки!
+                </p>
+            {% endif %}
+
             <div class="buttons">
-                <a href="{{ path('start_test', {testId: test.id}) }}" class="btn btn-default pull-right">Начать тест &raquo;</a>
+                <a href="{{ path('start_test', {testId: test.id}) }}"
+                   class="btn btn-default pull-right">Начать тест &raquo;</a>
 
                 {% if activeAttempt is not empty %}
-                    <a href="/" class="btn btn-default pull-left">&laquo; Продолжить</a>
+                    <a href="{{ path(
+                            'test_question',
+                            {testId: test.id, serialNumber: nextQuestionNumber}
+                        ) }}"
+                       class="btn btn-default pull-left">&laquo; Продолжить</a>
                 {% endif %}
             </div>
 

@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+
 {% block body %}
     {{ parent() }}
 
@@ -11,20 +13,35 @@
                 <p class="time_last">Осталось {{ attempt.timeLeft }} минут.</p>
             {% endif %}
 
-            <p class="serial_number">
-                Вопрос {{ currentQuestion.serialNumber }}
-                из {{ questionsCount }}
-            </p>
-
-            <p class="question">{{ currentQuestion.question }}</p>
-
-            {{ form_start(form) }}
-                <div class="form-group">
-                    {{ form_widget(form.answer, { 'attr': {'class': 'form-control'} }) }}
-                    {{ form_errors(form.answer) }}
+            <div class="panel panel-default">
+                <div class="serial_number panel-heading">
+                    Вопрос {{ currentQuestion.serialNumber }}
+                    из {{ questionsCount }}
                 </div>
-                {{ form_widget(form.save, { 'attr': {'class': 'btn btn-default pull-right'} }) }}
-            {{ form_end(form) }}
+
+                <div class="panel-body">
+                    <p class="question">{{ currentQuestion.question }}</p>
+
+                    {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_widget(form.answer) }}
+                        {{ form_errors(form.answer) }}
+                    </div>
+                    {% if nextQuestionNumber is not empty %}
+                        <a href="{{ path(
+                        'test_question',
+                        {testId: attempt.test.id, serialNumber: nextQuestionNumber}
+                        ) }}"
+                           class="btn btn-warning pull-left">Пропустить</a>
+                    {% else %}
+                        <a href="{{ path('test_finish', {testId: attempt.test.id}) }}"
+                           class="btn btn-warning pull-left">Пропустить</a>
+                    {% endif %}
+                    {{ form_widget(form.save, { 'attr': {'class': 'btn btn-default pull-right'} }) }}
+                    {{ form_end(form) }}
+
+                </div>
+            </div>
 
         </div>
     </div>

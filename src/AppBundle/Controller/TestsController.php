@@ -65,11 +65,19 @@ class TestsController extends Controller
                 ->findActiveAttempt($user);
         }
 
+        if (!empty($activeAttempt)) {
+            $nextQuestionNumber = $em->getRepository('AppBundle:Attempt')
+                ->getNextQuestionNumber($activeAttempt, $testId, 0);
+        } else {
+            $nextQuestionNumber = null;
+        }
+
         return $this->render('tests/preface.html.twig', [
             'test' => $test,
             'activeAttempt' => $activeAttempt,
             'questionsCount' => $questionsCount,
             'totalPoints' => $totalPoints,
+            'nextQuestionNumber' => $nextQuestionNumber,
         ]);
     }
 
@@ -141,9 +149,11 @@ class TestsController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $attemptRepo->deletePreviousAnswer($attempt, $currentQuestion);
             $this->populateAndPersistAnswers($currentQuestion, $attempt, $form->getData());
             $em->flush();
-            // todo: redirect to the next question
+
+            return $this->goToNextQuestionOrFinish($testId, $nextQuestionNumber);
         }
 
         return $this->render('tests/question.html.twig', [
@@ -153,6 +163,33 @@ class TestsController extends Controller
             'questionsCount' => $questionsCount,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @param $testId
+     * @Route(
+     *     "/test/{testId}/finish",
+     *     name="test_finish",
+     *     requirements={"testId": "\d+"}
+     * )
+     */
+    public function finishAction($testId)
+    {
+        die('test');
+    }
+
+    private function goToNextQuestionOrFinish(int $testId, int $nextQuestionNumber) {
+
+        if (empty($nextQuestionNumber)) {
+            return $this->redirectToRoute('test_finish', [
+                'testId' => $testId,
+            ]);
+        } else {
+            return $this->redirectToRoute('test_question', [
+                'testId' => $testId,
+                'serialNumber' => $nextQuestionNumber,
+            ]);
+        }
     }
 
     private function populateAndPersistAnswers($question, $attempt, $answersData)

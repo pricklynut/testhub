@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Attempt;
+use AppBundle\Entity\Question;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -59,12 +60,17 @@ class AttemptRepository extends EntityRepository
     }
 
     /**
+     * Find next question number:
+     * - it must be unanswered question
+     * - its serial number must be greater than current
+     * - if need to find first unanswered question, pass 0 as 3rd parameter
+     *
      * @param Attempt $attempt
      * @param int $testId
      * @param int $serialNumber
      * @return bool|string
      */
-    public function getNextQuestionNumber(Attempt $attempt, int $testId, int $serialNumber)
+    public function getNextQuestionNumber(Attempt $attempt, int $testId, int $serialNumber = 0)
     {
         $answeredQuestionsIds = $this->getAnsweredQuestionsIds($attempt->getId());
 
@@ -73,6 +79,20 @@ class AttemptRepository extends EntityRepository
         $unansweredQuestionsIds = array_diff($allQuestionsIds, $answeredQuestionsIds);
 
         return $this->findNextQuestionNumber($unansweredQuestionsIds, $serialNumber);
+    }
+
+    public function deletePreviousAnswer(Attempt $attempt, Question $question)
+    {
+        $dql = "DELETE FROM AppBundle\Entity\Answer a
+                WHERE a.question = :question AND a.attempt = :attempt";
+
+        $query = $this->getEntityManager()->createQuery($dql);
+        $query->setParameters([
+            'question' => $question,
+            'attempt' => $attempt,
+        ]);
+
+        $query->execute();
     }
 
     /**
