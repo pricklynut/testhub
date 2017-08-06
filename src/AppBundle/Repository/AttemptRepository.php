@@ -4,6 +4,8 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\Attempt;
 use AppBundle\Entity\Question;
+use AppBundle\Entity\Test;
+use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -108,6 +110,25 @@ class AttemptRepository extends EntityRepository
     }
 
     /**
+     * @param User $user
+     * @param Test $test
+     * @return mixed
+     */
+    public function findAttemptByUserAndTest(User $user, Test $test)
+    {
+        $dql = "SELECT a FROM AppBundle\Entity\Attempt a
+                WHERE a.user = :user AND a.test = :test ORDER BY a.started DESC";
+        $query = $this->getEntityManager()->createQuery($dql);
+        $query->setParameters([
+            'user' => $user,
+            'test' => $test,
+        ]);
+        $query->setMaxResults(1);
+
+        return $query->getOneOrNullResult();
+    }
+
+    /**
      * @param Attempt $attempt
      * @return array
      */
@@ -194,6 +215,24 @@ class AttemptRepository extends EntityRepository
         $stmt->execute();
 
         return $stmt->fetchColumn();
+    }
+
+    /**
+     * @param Attempt $attempt
+     * @param Question $question
+     * @return array
+     */
+    public function getAnswersOnQuestion(Attempt $attempt, Question $question)
+    {
+        $dql = "SELECT a FROM AppBundle\Entity\Answer a
+                WHERE a.question = :question AND a.attempt = :attempt";
+        $query = $this->getEntityManager()->createQuery($dql);
+        $query->setParameters([
+            'question' => $question,
+            'attempt' => $attempt,
+        ]);
+
+        return $query->getResult();
     }
 
 }

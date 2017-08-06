@@ -245,7 +245,16 @@ class Test
         return $this->tags;
     }
 
+    public function getMaxPoints()
+    {
+        $points = 0;
 
+        foreach ($this->getQuestions() as $question) {
+            $points += $question->getPrice();
+        }
+
+        return $points;
+    }
 
 }
 

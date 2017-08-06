@@ -222,6 +222,22 @@ class Question
     /**
      * @return array
      */
+    public function getCorrectVariants()
+    {
+        $correctVariants = [];
+
+        foreach ($this->getVariants() as $variant) {
+            if ($variant->getIsCorrect() === Variant::VARIANT_CORRECT) {
+                $correctVariants[] = $variant;
+            }
+        }
+
+        return $correctVariants;
+    }
+
+    /**
+     * @return array
+     */
     public function getVariantsList()
     {
         $list = [];

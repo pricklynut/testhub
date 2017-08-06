@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+
+<div class="wrapper container">
+    <div class="row">
+
+        <div class="content col-md-9 col-sm-8 col-xs-12">
+            <h1>Поздравляем!</h1>
+            <p>
+                Вы прошли тест
+                <strong>"{{ attempt.test.title }}"</strong>,
+                набрав
+            </p>
+            <div class="lead">
+                {{ points }} из {{ attempt.test.maxPoints }} баллов
+            </div>
+        </div>
+
+        {% include 'tests/sidebar_result.html.twig' %}
+    </div>
+</div>
+{% endblock body %}

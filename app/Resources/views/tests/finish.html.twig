@@ -11,6 +11,8 @@
                 <div class="panel-body">
                     {% if attempt.timeIsUp %}
                         <p>Время вышло!</p>
+                        <a href="{{ path('test_result', {testId: attempt.test.id}) }}"
+                           class="btn btn-default pull-right">Результаты</a>
                     {% else %}
                         <p>У вас есть неотвеченные вопросы. Вернуться к ним,
                         или завершить тест?</p>
@@ -19,9 +21,9 @@
                                     {testId: attempt.test.id, serialNumber: nextQuestionNumber}
                                 ) }}"
                            class="btn btn-default pull-left">Вернуться</a>
+                        <a href="{{ path('test_result', {testId: attempt.test.id}) }}"
+                           class="btn btn-default pull-right">Завершить</a>
                     {% endif %}
-                    <a href="{{ path('test_result', {testId: attempt.test.id}) }}"
-                       class="btn btn-default pull-right">Завершить</a>
                 </div>
             </div>
         </div>

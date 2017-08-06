@@ -215,9 +215,44 @@ class TestsController extends Controller
      *     requirements={"testId": "\d+"}
      * )
      */
-    public function resultAction($testId)
+    public function resultAction($testId, Request $request)
     {
-        // TODO: result action
+        $em = $this->getDoctrine()->getManager();
+        $guestKey = $request->cookies->get('guest_key');
+        $user = $em->getRepository('AppBundle:User')
+            ->findOneBy(['guestKey' => $guestKey]);
+        $test = $em->getRepository('AppBundle:Test')->find($testId);
+        $attemptRepo = $em->getRepository('AppBundle:Attempt');
+        $attempt = $attemptRepo->findAttemptByUserAndTest($user, $test);
+
+        $points = 0;
+        $rightAnswersCount = 0;
+
+        $questions = $test->getQuestions();
+
+        foreach ($questions as $question) {
+            $correctVariants = $question->getCorrectVariants();
+            $answers = $attemptRepo->getAnswersOnQuestion($attempt, $question);
+            $correctVariantsArray = array_map(function ($v) {
+                return $v->getAnswer();
+            }, $correctVariants);
+            $answersArray = array_map(function ($a) {
+                return $a->getAnswer();
+            }, $answers);
+            if (count($correctVariantsArray) !== count($answersArray)) {
+                continue;
+            }
+            if (empty(array_diff($correctVariantsArray, $answersArray))) {
+                $points += $question->getPrice();
+                $rightAnswersCount++;
+            }
+        }
+
+        return $this->render('tests/result.html.twig', [
+            'attempt' => $attempt,
+            'points' => $points,
+            'rightAnswersCount' => $rightAnswersCount,
+        ]);
     }
 
     private function goToNextQuestionOrFinish(int $testId, int $nextQuestionNumber = null)
