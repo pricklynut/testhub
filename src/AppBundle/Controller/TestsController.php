@@ -67,7 +67,7 @@ class TestsController extends Controller
 
         if (!empty($activeAttempt)) {
             $nextQuestionNumber = $em->getRepository('AppBundle:Attempt')
-                ->getNextQuestionNumber($activeAttempt, $testId, 0);
+                ->getNextQuestionNumber($activeAttempt, 0);
         } else {
             $nextQuestionNumber = null;
         }
@@ -134,11 +134,14 @@ class TestsController extends Controller
 
         $attemptRepo = $em->getRepository('AppBundle\Entity\Attempt');
         $attempt = $attemptRepo->findActiveAttempt($user);
+        if ($attempt->timeIsUp()) {
+            return $this->redirectToRoute('test_finish', ['testId' => $testId]);
+        }
 
         $currentQuestion = $attemptRepo
             ->getCurrentQuestion(intval($testId), intval($serialNumber));
         $nextQuestionNumber = $attemptRepo
-            ->getNextQuestionNumber($attempt, $testId, $serialNumber);
+            ->getNextQuestionNumber($attempt, $serialNumber);
 
         $testRepo = $em->getRepository('AppBundle\Entity\Test');
         $questionsCount = $testRepo->getQuestionsCount(intval($testId));
@@ -167,20 +170,59 @@ class TestsController extends Controller
 
     /**
      * @param $testId
+     * @param Request $request
      * @Route(
      *     "/test/{testId}/finish",
      *     name="test_finish",
      *     requirements={"testId": "\d+"}
      * )
      */
-    public function finishAction($testId)
+    public function finishAction($testId, Request $request)
     {
-        die('test');
+        $em = $this->getDoctrine()->getManager();
+        $guestKey = $request->cookies->get('guest_key');
+        $user = $em->getRepository('AppBundle:User')
+            ->findOneBy(['guestKey' => $guestKey]);
+
+        $attemptRepo = $em->getRepository('AppBundle:Attempt');
+        $attempt = $attemptRepo->findActiveAttempt($user);
+        $nextQuestionNumber = $attemptRepo->getNextQuestionNumber($attempt);
+
+        if (!$attemptRepo->hasUnansweredQuestions($attempt)) {
+            $attempt->finish();
+            $attempt->setFinished(new \DateTime());
+            $em->flush();
+            return $this->redirectToRoute('test_result', ['testId' => $testId]);
+        }
+
+        if ($attempt->timeIsUp()) {
+            $attempt->failed();
+            $attempt->setFinished(new \DateTime());
+            $em->flush();
+        }
+
+        return $this->render('tests/finish.html.twig', [
+            'attempt' => $attempt,
+            'nextQuestionNumber' => $nextQuestionNumber,
+        ]);
     }
 
-    private function goToNextQuestionOrFinish(int $testId, int $nextQuestionNumber) {
+    /**
+     * @param $testId
+     * @Route(
+     *     "/test/{testId}/result",
+     *     name="test_result",
+     *     requirements={"testId": "\d+"}
+     * )
+     */
+    public function resultAction($testId)
+    {
+        // TODO: result action
+    }
 
-        if (empty($nextQuestionNumber)) {
+    private function goToNextQuestionOrFinish(int $testId, int $nextQuestionNumber = null)
+    {
+        if ( empty($nextQuestionNumber) ) {
             return $this->redirectToRoute('test_finish', [
                 'testId' => $testId,
             ]);

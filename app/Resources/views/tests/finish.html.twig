@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{{ parent() }}
+
+<div class="wrapper container">
+    <div class="row">
+        <div class="content col-md-9 col-sm-8 col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    {% if attempt.timeIsUp %}
+                        <p>Время вышло!</p>
+                    {% else %}
+                        <p>У вас есть неотвеченные вопросы. Вернуться к ним,
+                        или завершить тест?</p>
+                        <a href="{{ path(
+                                    'test_question',
+                                    {testId: attempt.test.id, serialNumber: nextQuestionNumber}
+                                ) }}"
+                           class="btn btn-default pull-left">Вернуться</a>
+                    {% endif %}
+                    <a href="{{ path('test_result', {testId: attempt.test.id}) }}"
+                       class="btn btn-default pull-right">Завершить</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

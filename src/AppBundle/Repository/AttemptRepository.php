@@ -66,21 +66,24 @@ class AttemptRepository extends EntityRepository
      * - if need to find first unanswered question, pass 0 as 3rd parameter
      *
      * @param Attempt $attempt
-     * @param int $testId
      * @param int $serialNumber
      * @return bool|string
      */
-    public function getNextQuestionNumber(Attempt $attempt, int $testId, int $serialNumber = 0)
+    public function getNextQuestionNumber(Attempt $attempt, int $serialNumber = 0)
     {
-        $answeredQuestionsIds = $this->getAnsweredQuestionsIds($attempt->getId());
+        $unansweredQuestionsIds = $this->getUnansweredQuestionsIds($attempt);
 
-        $allQuestionsIds = $this->getAllQuestionsIds($testId);
-
-        $unansweredQuestionsIds = array_diff($allQuestionsIds, $answeredQuestionsIds);
+        if (empty($unansweredQuestionsIds)) {
+            return null;
+        }
 
         return $this->findNextQuestionNumber($unansweredQuestionsIds, $serialNumber);
     }
 
+    /**
+     * @param Attempt $attempt
+     * @param Question $question
+     */
     public function deletePreviousAnswer(Attempt $attempt, Question $question)
     {
         $dql = "DELETE FROM AppBundle\Entity\Answer a
@@ -93,6 +96,28 @@ class AttemptRepository extends EntityRepository
         ]);
 
         $query->execute();
+    }
+
+    /**
+     * @param Attempt $attempt
+     * @return bool
+     */
+    public function hasUnansweredQuestions(Attempt $attempt)
+    {
+        return count($this->getUnansweredQuestionsIds($attempt)) > 0;
+    }
+
+    /**
+     * @param Attempt $attempt
+     * @return array
+     */
+    private function getUnansweredQuestionsIds(Attempt $attempt)
+    {
+        $answeredQuestionsIds = $this->getAnsweredQuestionsIds($attempt->getId());
+
+        $allQuestionsIds = $this->getAllQuestionsIds($attempt->getTest()->getId());
+
+        return array_diff($allQuestionsIds, $answeredQuestionsIds);
     }
 
     /**
@@ -153,6 +178,10 @@ class AttemptRepository extends EntityRepository
      */
     private function findNextQuestionNumber(array $ids, int $sn)
     {
+        if (empty($ids)) {
+            return null;
+        }
+
         $conn = $this->getEntityManager()->getConnection();
 
         $ids = implode(', ', $ids);

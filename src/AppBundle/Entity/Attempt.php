@@ -201,6 +201,11 @@ class Attempt
         $this->status = self::STATUS_FINISHED;
     }
 
+    public function failed()
+    {
+        $this->status = self::STATUS_FAILED;
+    }
+
     public function getTimeLeft()
     {
         $wasted = $this->started->diff(new \DateTime());
@@ -210,6 +215,18 @@ class Attempt
         $minutes += $wasted->i;
 
         return $this->getTest()->getTimeLimit() - $minutes;
+    }
+
+    public function timeIsUp()
+    {
+        if (
+            !empty($this->getTest()->getTimeLimit())
+            and ($this->getTimeLeft() <= 0)
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
 }
