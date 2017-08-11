@@ -7,9 +7,9 @@ use AppBundle\Entity\Attempt;
 use AppBundle\Entity\Question;
 use AppBundle\Entity\Test;
 use AppBundle\Entity\User;
-use AppBundle\Form\NumberFormType;
-use AppBundle\Form\VariantFormType;
-use AppBundle\Form\StringFormType;
+use AppBundle\Form\NumberAnswerFormType;
+use AppBundle\Form\VariantAnswerFormType;
+use AppBundle\Form\StringAnswerFormType;
 use AppBundle\Helper\HashGenerator;
 use AppBundle\Helper\Pager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -318,14 +318,14 @@ class TestsController extends Controller
 
         switch ($question->getType()) {
             case Question::TYPE_NUMBER_TYPEIN:
-                return $this->createForm(NumberFormType::class, $answer);
+                return $this->createForm(NumberAnswerFormType::class, $answer);
             case Question::TYPE_STRING_TYPEIN:
-                return $this->createForm(StringFormType::class, $answer);
+                return $this->createForm(StringAnswerFormType::class, $answer);
             case Question::TYPE_SINGLE_VARIANT:
                 $data['multiple'] = false;
-                return $this->createForm(VariantFormType::class, $data);
+                return $this->createForm(VariantAnswerFormType::class, $data);
             case Question::TYPE_MULTIPLE_VARIANTS:
-                return $this->createForm(VariantFormType::class, $data);
+                return $this->createForm(VariantAnswerFormType::class, $data);
         }
     }
 
