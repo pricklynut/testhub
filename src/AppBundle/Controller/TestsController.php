@@ -224,6 +224,8 @@ class TestsController extends Controller
         $test = $em->getRepository('AppBundle:Test')->find($testId);
         $attemptRepo = $em->getRepository('AppBundle:Attempt');
         $attempt = $attemptRepo->findAttemptByUserAndTest($user, $test);
+        $attempt->setStatus(Attempt::STATUS_FINISHED);
+        $em->flush();
 
         $points = 0;
         $rightAnswersCount = 0;
