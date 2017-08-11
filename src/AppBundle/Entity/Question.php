@@ -53,6 +53,13 @@ class Question
     /**
      * @var integer
      *
+     * @ORM\Column(name="`precision`", type="integer", nullable=true)
+     */
+    private $precision;
+
+    /**
+     * @var integer
+     *
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -248,6 +255,22 @@ class Question
         }
 
         return $list;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPrecision(): int
+    {
+        return $this->precision;
+    }
+
+    /**
+     * @param int $precision
+     */
+    public function setPrecision(int $precision)
+    {
+        $this->precision = $precision;
     }
 
 }

@@ -32,6 +32,7 @@ class Version20170731161558 extends AbstractMigration
                 price SMALLINT NOT NULL DEFAULT 1,
                 test_id INT NOT NULL,
                 type question_type NOT NULL,
+                \"precision\" SMALLINT NOT NULL DEFAULT 0,
                 serial_number SMALLINT NOT NULL,
                 FOREIGN KEY (test_id) REFERENCES tests (id)
                     ON UPDATE CASCADE ON DELETE CASCADE

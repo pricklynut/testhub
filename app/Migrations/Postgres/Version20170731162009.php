@@ -22,7 +22,6 @@ class Version20170731162009 extends AbstractMigration
                 id BIGSERIAL PRIMARY KEY,
                 answer VARCHAR(255) NOT NULL,
                 is_correct variant_correct NOT NULL,
-                \"precision\" INT,
                 question_id BIGINT NOT NULL,
                 FOREIGN KEY (question_id) REFERENCES questions (id)
                     ON UPDATE CASCADE ON DELETE CASCADE

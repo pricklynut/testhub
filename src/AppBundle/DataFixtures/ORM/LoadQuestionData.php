@@ -12,7 +12,7 @@ class LoadQuestionData extends AbstractFixture implements OrderedFixtureInterfac
     public function load(ObjectManager $manager)
     {
         $question1 = $this->save($manager, 'Назовите третью планету от Солнца.', 'test1', 'string_typein', 2);
-        $question2 = $this->save($manager, 'Назовите число Пи (минимум 2 знака после запятой).', 'test1', 'number_typein', 1);
+        $question2 = $this->save($manager, 'Назовите число Пи (минимум 2 знака после запятой).', 'test1', 'number_typein', 1, 1, 2);
         $question3 = $this->save($manager, 'Сколько ног у осьминога?', 'test1', 'single_variant', 3);
         $question4 = $this->save($manager, 'Отметьте произведения Пушкина:', 'test1', 'multiple_variants', 4);
 
@@ -50,7 +50,7 @@ class LoadQuestionData extends AbstractFixture implements OrderedFixtureInterfac
         return 4;
     }
 
-    private function save($manager, $question, $test, $type, $number, $price = 1)
+    private function save($manager, $question, $test, $type, $number, $price = 1, $precision = 0)
     {
         $entity = new Question();
         $entity->setQuestion($question);
@@ -58,6 +58,7 @@ class LoadQuestionData extends AbstractFixture implements OrderedFixtureInterfac
         $entity->setType($type);
         $entity->setSerialNumber($number);
         $entity->setPrice($price);
+        $entity->setPrecision($precision);
         $manager->persist($entity);
 
         return $entity;

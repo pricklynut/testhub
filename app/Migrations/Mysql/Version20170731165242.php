@@ -20,7 +20,6 @@ class Version20170731165242 extends AbstractMigration
                 id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 answer VARCHAR(255) NOT NULL,
                 is_correct ENUM ('yes', 'no') NOT NULL,
-                `precision` INT UNSIGNED,
                 question_id BIGINT UNSIGNED NOT NULL,
                 FOREIGN KEY (question_id) REFERENCES questions (id)
                     ON UPDATE CASCADE ON DELETE CASCADE

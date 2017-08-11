@@ -13,7 +13,7 @@ class LoadVariantData extends AbstractFixture implements OrderedFixtureInterface
     {
         $this->save($manager, 'Земля', 'yes', 'question1');
 
-        $this->save($manager, '3.14', 'yes', 'question2', 2);
+        $this->save($manager, '3.14', 'yes', 'question2');
 
         $this->save($manager, '2', 'no', 'question3');
         $this->save($manager, '6', 'no', 'question3');
@@ -83,15 +83,12 @@ class LoadVariantData extends AbstractFixture implements OrderedFixtureInterface
         return 5;
     }
 
-    private function save($manager, $answer, $isCorrect, $question, $precision = null)
+    private function save($manager, $answer, $isCorrect, $question)
     {
         $v = new Variant();
         $v->setAnswer($answer);
         $v->setIsCorrect($isCorrect);
         $v->setQuestion($this->getReference($question));
-        if (!empty($precision)) {
-            $v->setPrecision($precision);
-        }
 
         $manager->persist($v);
     }

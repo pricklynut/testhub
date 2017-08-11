@@ -27,6 +27,7 @@ class Version20170731165101 extends AbstractMigration
                     'single_variant',
                     'multiple_variants'
                 ) NOT NULL,
+                `precision` TINYINT UNSIGNED NOT NULL DEFAULT 0,
                 serial_number TINYINT UNSIGNED NOT NULL,
                 FOREIGN KEY (test_id) REFERENCES tests (id)
                     ON UPDATE CASCADE ON DELETE CASCADE
