@@ -95,7 +95,7 @@ class Variant
      */
     public function getIsCorrect()
     {
-        return $this->isCorrect === "yes";
+        return in_array($this->isCorrect, ["yes", "1"]);
     }
 
     /**

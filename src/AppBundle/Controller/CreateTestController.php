@@ -8,6 +8,7 @@ use AppBundle\Entity\Variant;
 use AppBundle\Form\TestFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 
 class CreateTestController extends Controller
@@ -23,11 +24,49 @@ class CreateTestController extends Controller
         $test = new Test();
         $test->assignAuthor($user);
         $test->setCreated(new \DateTime());
+        $test->setTimeLimit(0);
+
         $question = new Question();
         $question->setTest($test);
+        $question->setSerialNumber(1);
+
         $variant = new Variant();
         $variant->setQuestion($question);
 
+        return $this->createOrEdit($request, $test);
+    }
+
+    /**
+     * @param Request $request
+     * @param $testId
+     *
+     * @Route(
+     *     "/test/{testId}/edit",
+     *     name="test_edit",
+     *     requirements={"testId": "\d+"}
+     * )
+     */
+    public function actionEdit(Request $request, $testId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $test = $em->find('AppBundle:Test', $testId);
+
+        $guestKey = $request->cookies->get('guest_key');
+        $user = $em->getRepository('AppBundle:User')->findOneBy(['guestKey' => $guestKey]);
+
+        if ($user->getId() !== $test->getAuthor()->getId()) {
+            throw new AccessDeniedException("У вас нет прав на выполнение данного действия");
+        }
+
+        return $this->createOrEdit($request, $test);
+    }
+
+    /**
+     * @param Request $request
+     * @param string|null $testId
+     */
+    private function createOrEdit(Request $request, Test $test)
+    {
         $form = $this->createForm(TestFormType::class, $test);
 
         $form->handleRequest($request);
@@ -62,4 +101,5 @@ class CreateTestController extends Controller
             'form' => $form->createView(),
         ]);
     }
+
 }

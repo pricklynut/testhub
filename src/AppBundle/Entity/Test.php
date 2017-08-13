@@ -33,6 +33,7 @@ class Test
      *     mappedBy="test",
      *     cascade={"persist"}
      * )
+     * @ORM\OrderBy({"serialNumber" = "ASC"})
      */
     private $questions;
 
@@ -90,7 +91,7 @@ class Test
      *
      * @ORM\Column(name="show_answers", type="string")
      */
-    private $showAnswers;
+    private $showAnswers = self::NOT_SHOW_ANSWERS;
 
     /**
      * @var \DateTime
@@ -244,7 +245,7 @@ class Test
      */
     public function getShowAnswers()
     {
-        return $this->showAnswers === "yes";
+        return in_array($this->showAnswers, ["yes", "1"]);
     }
 
     /**

@@ -94,6 +94,7 @@ class Question
      *     mappedBy="question",
      *     cascade={"persist"}
      * )
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $variants;
 
@@ -243,7 +244,7 @@ class Question
         $correctVariants = [];
 
         foreach ($this->getVariants() as $variant) {
-            if ($variant->getIsCorrect() === Variant::VARIANT_CORRECT) {
+            if ($variant->getIsCorrect()) {
                 $correctVariants[] = $variant;
             }
         }

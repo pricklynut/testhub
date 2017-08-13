@@ -47,19 +47,17 @@ class QuestionFormType extends AbstractType
             'required' => true,
             'empty_data' => 1,
             'label' => 'Баллов за ответ',
-            'attr' => ['min' => 1, 'max' => 100, 'value' => 1],
+            'attr' => ['min' => 1, 'max' => 100],
         ]);
 
         $builder->add('precision', IntegerType::class, [
             'label' => 'Точность (минимальное кол-во знаков после запятой)',
             'empty_data' => 0,
             'required' => false,
-            'attr' => ['min' => 0, 'max' => 100, 'value' => 0],
+            'attr' => ['min' => 0, 'max' => 100],
         ]);
 
-        $builder->add('serialNumber', HiddenType::class, [
-            'attr' => ['value' => 1],
-        ]);
+        $builder->add('serialNumber', HiddenType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
