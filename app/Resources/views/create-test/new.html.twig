@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+
+<div class="wrapper container">
+    <div class="row">
+        <div class="content col-md-8 col-sm-12">
+            <h1>Создать новый тест</h1>
+
+            {{ form_start(form) }}
+
+                {{ form_row(form.title) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.timeLimit) }}
+                {{ form_row(form.showAnswers) }}
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <h3>Вопросы</h3>
+                        <ol class="questions-list"
+                            data-prototype-variant="{{
+                            form_widget(form.questions.vars.prototype.variants.vars.prototype)|e('html_attr')
+                            }}"
+                            data-prototype-question="{{
+                                form_widget(form.questions.vars.prototype)|e('html_attr')
+                            }}">
+                            {% for question in form.questions %}
+                                <li class="question-item" data-serial-number="{{ loop.index0 }}">
+                                    {{ form_row(question.question) }}
+                                    {{ form_row(question.type) }}
+                                    {{ form_row(question.price) }}
+                                    {{ form_row(question.precision) }}
+                                    {{ form_row(question.serialNumber) }}
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-body">
+
+                                            <h4>Варианты ответа</h4>
+
+                                            <ol class="variants-list">
+                                                {% for variant in question.variants %}
+                                                    <li class="variant-item">
+                                                        {{ form_row(variant.answer) }}
+                                                        {{ form_row(variant.isCorrect) }}
+                                                    </li>
+                                                {% endfor %}
+
+                                                <div class="clearfix">
+                                                    <button class="btn btn-default pull-right add-variant-btn">
+                                                        + Добавить вариант
+                                                    </button>
+                                                </div>
+                                            </ol>
+
+                                        </div>
+                                    </div>
+
+                                </li>
+                            {% endfor %}
+
+                            <div class="clearfix">
+                                <button class="btn btn-default pull-right add-question-btn">
+                                    + Добавить вопрос
+                                </button>
+                            </div>
+                        </ol>
+
+                    </div>
+                </div>
+
+                <input type="submit" class="btn btn-default" value="Сохранить">
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/template" id="variants-template">
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4>Варианты ответа</h4>
+
+                <ol class="variants-list">
+                    <div class="clearfix">
+                        <button class="btn btn-default pull-right add-variant-btn">
+                            + Добавить вариант
+                        </button>
+                    </div>
+                </ol>
+            </div>
+        </div>
+
+    </script>
+
+    <script>
+        $(function () {
+            var addQuestionBtnSelector = ".add-question-btn";
+            var addVariantBtnSelector = ".add-variant-btn";
+
+            var questionsList = $(".questions-list");
+            questionsList.data("index", questionsList.find(".question-item").length);
+
+            questionsList.on("click", addQuestionBtnSelector, function (e) {
+                e.preventDefault();
+                addQuestion(questionsList, $(addQuestionBtnSelector));
+            });
+
+            questionsList.on("click", addVariantBtnSelector, function (e) {
+                e.preventDefault();
+                var currentList = $(this).parents(".variants-list");
+                addVariant(currentList, $(this));
+            });
+
+            function addQuestion(list, button) {
+                var prototype = list.data("prototype-question");
+                var index = list.data('index');
+
+                var newForm = prototype.replace(/__question_number__/g, index);
+                list.data('index', index + 1);
+
+                var newFormItem = $('<li class="question-item" ' +
+                    'data-serial-number="'+index+'"></li>').append(newForm);
+                button.before(newFormItem);
+
+                var hiddenSerialNumber = $(newFormItem).find('input[type=hidden]');
+                hiddenSerialNumber.val(index + 1);
+
+                var variantsContainer = $("#variants-template").html();
+                newFormItem.append(variantsContainer);
+
+                var variantsList = $(newFormItem).find(".variants-list");
+                var currentButton = variantsList.find(addVariantBtnSelector);
+
+                addVariant(variantsList, currentButton);
+            }
+
+            function addVariant(list, button) {
+                var prototype = questionsList.data("prototype-variant");
+                var index = list.find(".variant-item").length;
+
+                var newForm = prototype.replace(/__variant_number__/g, index);
+                var questionNumber = list.parents(".question-item").data("serial-number");
+                newForm = newForm.replace(/__question_number__/g, questionNumber);
+
+                var newFormItem = $('<li class="variant-item"></li>').append(newForm);
+                button.before(newFormItem);
+            }
+        });
+    </script>
+
+{% endblock javascripts %}

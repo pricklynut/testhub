@@ -91,7 +91,8 @@ class Question
      *
      * @ORM\OneToMany(
      *     targetEntity="AppBundle\Entity\Variant",
-     *     mappedBy="question"
+     *     mappedBy="question",
+     *     cascade={"persist"}
      * )
      */
     private $variants;
@@ -114,6 +115,14 @@ class Question
     }
 
     /**
+     * @param $variants
+     */
+    public function setVariants($variants)
+    {
+        $this->variants = $variants;
+    }
+
+    /**
      * @param Variant $variant
      */
     public function addVariant(Variant $variant)
@@ -124,7 +133,7 @@ class Question
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
@@ -132,7 +141,7 @@ class Question
     /**
      * @return string
      */
-    public function getQuestion(): string
+    public function getQuestion()
     {
         return $this->question;
     }
@@ -148,7 +157,7 @@ class Question
     /**
      * @return int
      */
-    public function getPrice(): int
+    public function getPrice()
     {
         return $this->price;
     }
@@ -164,7 +173,7 @@ class Question
     /**
      * @return string
      */
-    public function getType(): string
+    public function getType()
     {
         return $this->type;
     }
@@ -180,7 +189,7 @@ class Question
     /**
      * @return int
      */
-    public function getSerialNumber(): int
+    public function getSerialNumber()
     {
         return $this->serialNumber;
     }
@@ -221,7 +230,7 @@ class Question
     /**
      * @return Collection
      */
-    public function getVariants(): Collection
+    public function getVariants()
     {
         return $this->variants;
     }
@@ -260,7 +269,7 @@ class Question
     /**
      * @return int
      */
-    public function getPrecision(): int
+    public function getPrecision()
     {
         return $this->precision;
     }

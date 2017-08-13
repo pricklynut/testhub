@@ -25,7 +25,7 @@ class Variant
     /**
      * @var string
      *
-     * @ORM\Column(name="is_correct", type="string", nullable=false)
+     * @ORM\Column(name="is_correct", type="string")
      */
     private $isCorrect;
 
@@ -69,7 +69,7 @@ class Variant
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
@@ -77,7 +77,7 @@ class Variant
     /**
      * @return string
      */
-    public function getAnswer(): string
+    public function getAnswer()
     {
         return $this->answer;
     }
@@ -93,9 +93,9 @@ class Variant
     /**
      * @return string
      */
-    public function getIsCorrect(): string
+    public function getIsCorrect()
     {
-        return $this->isCorrect;
+        return $this->isCorrect === "yes";
     }
 
     /**

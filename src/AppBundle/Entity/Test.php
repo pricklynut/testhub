@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Test
@@ -23,48 +24,81 @@ class Test
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Attempt", mappedBy="test")
      */
     private $attempts;
+
     /**
      * @var Collection
      *
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Question", mappedBy="test")
+     * @ORM\OneToMany(
+     *     targetEntity="AppBundle\Entity\Question",
+     *     mappedBy="test",
+     *     cascade={"persist"}
+     * )
      */
     private $questions;
+
     /**
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     * @Assert\NotBlank(message="Заполните это поле")
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     minMessage="Минимальная длина {{ limit }} символа",
+     *     maxMessage="Максимальная длина {{ limit }} символов"
+     * )
      */
     private $title;
+
     /**
      * @var string
      *
      * @ORM\Column(name="description", type="text", length=65535, nullable=true)
+     * @Assert\Length(
+     *     max=65535,
+     *     maxMessage="Максимальная длина описания 64 kb"
+     * )
      */
     private $description;
+
     /**
      * @var integer
      *
      * @ORM\Column(name="time_limit", type="integer", nullable=true)
+     * @Assert\Type(
+     *     type="integer",
+     *     message="Введите целое число"
+     * )
+     * @Assert\Range(
+     *     min=0,
+     *     max=1000,
+     *     minMessage="Значение не может быть меньше {{ limit }}",
+     *     maxMessage="Значение не может быть больше {{ limit }}"
+     * )
      */
     private $timeLimit;
+
     /**
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="tests")
      */
     private $author;
+
     /**
      * @var string
      *
-     * @ORM\Column(name="show_answers", type="string", nullable=false)
+     * @ORM\Column(name="show_answers", type="string")
      */
-    private $showAnswers = self::NOT_SHOW_ANSWERS;
+    private $showAnswers;
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime", nullable=false)
      */
     private $created;
+
     /**
      * @var integer
      *
@@ -152,7 +186,7 @@ class Test
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
@@ -160,7 +194,7 @@ class Test
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getTitle()
     {
         return $this->title;
     }
@@ -176,7 +210,7 @@ class Test
     /**
      * @return string
      */
-    public function getDescription(): string
+    public function getDescription()
     {
         return $this->description;
     }
@@ -192,7 +226,7 @@ class Test
     /**
      * @return int
      */
-    public function getTimeLimit(): int
+    public function getTimeLimit()
     {
         return $this->timeLimit;
     }
@@ -208,9 +242,9 @@ class Test
     /**
      * @return string
      */
-    public function getShowAnswers(): string
+    public function getShowAnswers()
     {
-        return $this->showAnswers;
+        return $this->showAnswers === "yes";
     }
 
     /**
