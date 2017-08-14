@@ -3,6 +3,7 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\Attempt;
+use AppBundle\Entity\Test;
 use AppBundle\Entity\User;
 
 class AttemptService extends AbstractService
@@ -32,5 +33,27 @@ class AttemptService extends AbstractService
         }
 
         return $this->attemptRepo->getNextQuestionNumber($attempt, $currentNumber);
+    }
+
+    public function finishActiveAttempts(User $user)
+    {
+        $this->attemptRepo->finishActiveAttempts($user);
+    }
+
+    /**
+     * @param User $user
+     * @param Test $test
+     * @return Attempt
+     */
+    public function createAndPersistAttempt(User $user, Test $test)
+    {
+        $attempt = new Attempt();
+        $attempt->setStatus(Attempt::STATUS_UNDERWAY);
+        $attempt->setStarted(new \DateTime());
+        $attempt->setUser($user);
+        $attempt->setTest($test);
+        $this->em->persist($attempt);
+
+        return $attempt;
     }
 }

@@ -10,7 +10,6 @@ use AppBundle\Entity\User;
 use AppBundle\Form\NumberAnswerFormType;
 use AppBundle\Form\VariantAnswerFormType;
 use AppBundle\Form\StringAnswerFormType;
-use AppBundle\Helper\HashGenerator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -73,27 +72,30 @@ class TestsController extends Controller
      */
     public function startAction($testId, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $guestKey = $request->cookies->get('guest_key');
-        $test = $em->find('AppBundle\Entity\Test', $testId);
+        $test = $this->get('test_service')->findById(intval($testId));
         $this->checkNotFound($test);
 
         $response = new RedirectResponse(
-            $this->generateUrl('test_question', ['testId' => $testId, 'serialNumber' => 1])
+            $this->generateUrl(
+                'test_question',
+                ['testId' => $testId, 'serialNumber' => 1]
+            )
         );
 
+        $guestKey = $request->cookies->get('guest_key');
+
         if (empty($guestKey)) {
-            $user = $this->createAndPersistUser();
+            $user = $this->get('user_service')->createAndPersistUser();
             $response->headers->setCookie(
                 new Cookie('guest_key', $user->getGuestKey(), time() + 3600*24*365)
             );
         } else {
-            $user = $em->getRepository('AppBundle\Entity\User')->findOneBy(['guestKey' => $guestKey]);
-            $em->getRepository('AppBundle\Entity\Attempt')->finishActiveAttempts($user);
+            $user = $this->get('user_service')->findByGuestKey($guestKey);
+            $this->get('attempt_service')->finishActiveAttempts($user);
         }
 
-        $this->createAndPersistAttempt($user, $test);
-        $em->flush();
+        $this->get('attempt_service')->createAndPersistAttempt($user, $test);
+        $this->getDoctrine()->getManager()->flush();
 
         return $response;
     }
@@ -344,36 +346,6 @@ class TestsController extends Controller
         }
 
         return true;
-    }
-
-    /**
-     * @return User
-     */
-    private function createAndPersistUser()
-    {
-        $user = new User();
-        $user->setGuestKey(HashGenerator::generateHash());
-        $user->setRegistered(new \DateTime());
-        $this->getDoctrine()->getManager()->persist($user);
-
-        return $user;
-    }
-
-    /**
-     * @param User $user
-     * @param Test $test
-     * @return Attempt
-     */
-    private function createAndPersistAttempt(User $user, Test $test)
-    {
-        $attempt = new Attempt();
-        $attempt->setStatus(Attempt::STATUS_UNDERWAY);
-        $attempt->setStarted(new \DateTime());
-        $attempt->setUser($user);
-        $attempt->setTest($test);
-        $this->getDoctrine()->getManager()->persist($attempt);
-
-        return $attempt;
     }
 
     /**
