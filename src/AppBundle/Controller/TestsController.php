@@ -11,7 +11,6 @@ use AppBundle\Form\NumberAnswerFormType;
 use AppBundle\Form\VariantAnswerFormType;
 use AppBundle\Form\StringAnswerFormType;
 use AppBundle\Helper\HashGenerator;
-use AppBundle\Helper\Pager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -29,10 +28,8 @@ class TestsController extends Controller
         $page = $request->query->get('page', 1);
         $search = $request->query->get('search');
 
-        $em = $this->getDoctrine()->getManager();
-        $testRepo = $em->getRepository('AppBundle\Entity\Test');
-        $pager = new Pager($page, $testRepo->getTotalCount($search));
-        $tests = $testRepo->findByPage($page, $search, $pager->getPerPage());
+        $pager = $this->get('test_service')->createPager($page, $search);
+        $tests = $this->get('test_service')->findByPage($page, $search);
 
         return $this->render('tests/list.html.twig', [
             'tests' => $tests,

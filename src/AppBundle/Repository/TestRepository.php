@@ -27,34 +27,6 @@ class TestRepository extends EntityRepository
     }
 
     /**
-     * @param int $page
-     * @param string $search
-     * @param int $perPage
-     * @return Paginator
-     */
-    public function findByPage(int $page = 1, string $search = null, int $perPage = 5)
-    {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select(['test', 'tags'])
-            ->from('AppBundle\Entity\Test', 'test')
-            ->leftJoin('test.tags', 'tags')
-            ->orderBy('test.created', 'DESC')
-            ->setFirstResult(($page - 1)*$perPage)
-            ->setMaxResults($perPage);
-
-        if (!empty($search)) {
-            $searchIds = $this->searchIds($search);
-            if (empty($searchIds)) {
-                return null;
-            }
-            $qb->where('test.id IN (:ids)')
-                ->setParameter('ids', $searchIds);
-        }
-
-        return new Paginator($qb->getQuery(), $fetchJoin = true);
-    }
-
-    /**
      * @return mixed
      */
     public function getTotalCount(string $search = null)
@@ -97,7 +69,7 @@ class TestRepository extends EntityRepository
      * @param string $phrase
      * @return mixed
      */
-    private function searchIds(string $phrase)
+    public function searchIds(string $phrase)
     {
         $phraseParts = array_filter(preg_split('/\W+/ui', $phrase));
         $searchString = join(' | ', $phraseParts);

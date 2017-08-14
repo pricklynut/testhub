@@ -37,7 +37,6 @@ class Pager
     {
         $this->currentPage = $currentPage;
         $this->totalCount = $totalCount;
-        //$this->setFirstAndLastPage();
     }
 
     /**
