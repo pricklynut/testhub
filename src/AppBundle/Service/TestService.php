@@ -69,4 +69,19 @@ class TestService extends AbstractService
         return new Paginator($queryBuilder, $fetchJoin = true);
     }
 
+    public function getQuestionsCount(int $testId)
+    {
+        return $this->testRepo->getQuestionsCount($testId);
+    }
+
+    public function getTotalPoints(int $testId)
+    {
+        return $this->testRepo->getTotalPoints($testId);
+    }
+
+    public function findById(int $testId)
+    {
+        return $this->testRepo->find($testId);
+    }
+
 }

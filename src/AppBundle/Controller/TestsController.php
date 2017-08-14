@@ -44,30 +44,19 @@ class TestsController extends Controller
      */
     public function prefaceAction($testId, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $testRepo = $em->getRepository('AppBundle\Entity\Test');
-        $guestKey = $request->cookies->get('guest_key');
-        $test = $em->find('AppBundle\Entity\Test', $testId);
-        $questionsCount = $testRepo->getQuestionsCount($test->getId());
-        $totalPoints = $testRepo->getTotalPoints($test->getId());
+        $testService = $this->get('test_service');
 
+        $test = $testService->findById(intval($testId));
         $this->checkNotFound($test);
 
-        $activeAttempt = null;
+        $questionsCount = $testService->getQuestionsCount($test->getId());
+        $totalPoints = $testService->getTotalPoints($test->getId());
 
-        if (!empty($guestKey)) {
-            $user = $em->getRepository('AppBundle\Entity\User')
-                ->findOneBy(['guestKey' => $guestKey]);
-            $activeAttempt = $em->getRepository('AppBundle\Entity\Attempt')
-                ->findActiveAttempt($user);
-        }
-
-        if (!empty($activeAttempt)) {
-            $nextQuestionNumber = $em->getRepository('AppBundle:Attempt')
-                ->getNextQuestionNumber($activeAttempt, 0);
-        } else {
-            $nextQuestionNumber = null;
-        }
+        $guestKey = $request->cookies->get('guest_key');
+        $user = $this->get('user_service')->findByGuestKey($guestKey);
+        $activeAttempt = $this->get('attempt_service')->findActiveAttempt($user);
+        $nextQuestionNumber = $this->get('attempt_service')
+            ->getNextQuestionNumber($activeAttempt, $curNumber = 0);
 
         return $this->render('tests/preface.html.twig', [
             'test' => $test,

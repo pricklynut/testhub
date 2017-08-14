@@ -46,3 +46,9 @@ services:
         arguments:
             - "@doctrine"
             - "%tests_list.per_page%"
+
+    user_service:
+        class: AppBundle\Service\UserService
+        public: true
+        arguments:
+            - "@doctrine"
