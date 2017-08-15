@@ -196,14 +196,16 @@ class Attempt
         return $this->id;
     }
 
-    public function finish()
+    public function finish(\DateTime $dateTime = null)
     {
         $this->status = self::STATUS_FINISHED;
+        $this->finished = $dateTime ?? new \DateTime();
     }
 
-    public function failed()
+    public function failed(\DateTime $dateTime = null)
     {
         $this->status = self::STATUS_FAILED;
+        $this->finished = $dateTime ?? new \DateTime();
     }
 
     public function getTimeLeft()

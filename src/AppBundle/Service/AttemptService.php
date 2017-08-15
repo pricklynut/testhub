@@ -7,6 +7,7 @@ use AppBundle\Entity\Attempt;
 use AppBundle\Entity\Question;
 use AppBundle\Entity\Test;
 use AppBundle\Entity\User;
+use AppBundle\Helper\Result;
 
 class AttemptService extends AbstractService
 {
@@ -120,6 +121,42 @@ class AttemptService extends AbstractService
                 }
                 break;
         }
+    }
+
+    public function getResult(Test $test, Attempt $attempt)
+    {
+        $points = 0;
+        $rightAnswersCount = 0;
+
+        $questions = $test->getQuestions();
+
+        foreach ($questions as $question) {
+            $correctVariants = $question->getCorrectVariants();
+            $answers = $this->attemptRepo->getAnswersOnQuestion($attempt, $question);
+
+            $correctVariantsArray = array_map(function ($v) {
+                return $v->getAnswer();
+            }, $correctVariants);
+
+            $answersArray = array_map(function ($a) {
+                return $a->getAnswer();
+            }, $answers);
+
+            if (count($correctVariantsArray) !== count($answersArray)) {
+                continue;
+            }
+
+            if (empty(array_diff($correctVariantsArray, $answersArray))) {
+                $points += $question->getPrice();
+                $rightAnswersCount++;
+            }
+        }
+
+        $result = new Result();
+        $result->setPoints($points);
+        $result->setRightAnswersCount($rightAnswersCount);
+
+        return $result;
     }
 
 }
