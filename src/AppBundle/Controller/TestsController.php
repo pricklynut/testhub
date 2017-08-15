@@ -111,28 +111,27 @@ class TestsController extends Controller
      */
     public function questionAction($testId, $serialNumber, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $guestKey = $request->cookies->get('guest_key');
-        $user = $em->getRepository('AppBundle\Entity\User')
-            ->findOneBy(['guestKey' => $guestKey]);
+        $test = $this->get('test_service')->findById(intval($testId));
+        $this->checkNotFound($test);
 
-        if ( !$this->canUserPassTest(intval($testId), $user) ) {
+        $guestKey = $request->cookies->get('guest_key');
+        $user = $this->get('user_service')->findByGuestKey($guestKey);
+
+        if ( !$this->get('user_service')->canUserPassTest($user, $test) ) {
             return $this->redirectToRoute('test_preface', ['testId' => $testId]);
         }
 
-        $attemptRepo = $em->getRepository('AppBundle\Entity\Attempt');
-        $attempt = $attemptRepo->findActiveAttempt($user);
-        if ($attempt->timeIsUp()) {
+        if ($this->get('attempt_service')->timeIsUp($user, $test)) {
             return $this->redirectToRoute('test_finish', ['testId' => $testId]);
         }
 
-        $currentQuestion = $attemptRepo
+        $attempt = $this->get('attempt_service')->findActiveAttemptByTest($user, $test);
+        $currentQuestion = $this->get('attempt_service')
             ->getCurrentQuestion(intval($testId), intval($serialNumber));
-        $nextQuestionNumber = $attemptRepo
+        $nextQuestionNumber = $this->get('attempt_service')
             ->getNextQuestionNumber($attempt, $serialNumber);
 
-        $testRepo = $em->getRepository('AppBundle\Entity\Test');
-        $questionsCount = $testRepo->getQuestionsCount(intval($testId));
+        $questionsCount = $this->get('test_service')->getQuestionsCount(intval($testId));
 
         $answer = new Answer();
 
@@ -140,9 +139,11 @@ class TestsController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $attemptRepo->deletePreviousAnswer($attempt, $currentQuestion);
-            $this->populateAndPersistAnswers($currentQuestion, $attempt, $form->getData());
-            $em->flush();
+            $this->get('attempt_service')->deletePreviousAnswer($attempt, $currentQuestion);
+            $this->get('attempt_service')
+                ->populateAndPersistAnswers($currentQuestion, $attempt, $form->getData());
+
+            $this->getDoctrine()->getManager()->flush();
 
             return $this->goToNextQuestionOrFinish($testId, $nextQuestionNumber);
         }
@@ -259,38 +260,6 @@ class TestsController extends Controller
         }
     }
 
-    private function populateAndPersistAnswers($question, $attempt, $answersData)
-    {
-        switch ($question->getType()) {
-            case Question::TYPE_NUMBER_TYPEIN:
-            case Question::TYPE_STRING_TYPEIN:
-                $answer = $answersData;
-                $answer->setAttempt($attempt);
-                $answer->setQuestion($question);
-                $answer->setReceived(new \DateTime());
-                $this->getDoctrine()->getManager()->persist($answer);
-                break;
-            case Question::TYPE_SINGLE_VARIANT:
-                $model = new Answer();
-                $model->setQuestion($question);
-                $model->setAttempt($attempt);
-                $model->setReceived(new \DateTime());
-                $model->setAnswer($answersData['answer']);
-                $this->getDoctrine()->getManager()->persist($model);
-                break;
-            case Question::TYPE_MULTIPLE_VARIANTS:
-                foreach ($answersData['answer'] as $answerText) {
-                    $answer = new Answer();
-                    $answer->setQuestion($question);
-                    $answer->setAttempt($attempt);
-                    $answer->setReceived(new \DateTime());
-                    $answer->setAnswer($answerText);
-                    $this->getDoctrine()->getManager()->persist($answer);
-                }
-                break;
-        }
-    }
-
     /**
      * @param Question $question
      * @param Answer $answer
@@ -317,36 +286,6 @@ class TestsController extends Controller
         }
     }
 
-    /**
-     * User can pass test in the following cases:
-     * - if she has a guest_key cookie
-     * - and if she has an active attempt
-     * - and if the active attempt's test_id equals to the current test
-     *
-     * @param Request $request
-     * @param $testId
-     * @return bool
-     */
-    private function canUserPassTest(int $testId, User $user = null)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        if (empty($user)) {
-            return false;
-        }
-
-        $activeAttempt = $em->getRepository('AppBundle\Entity\Attempt')
-            ->findActiveAttempt($user);
-
-        if (
-            empty($activeAttempt)
-            or ($activeAttempt->getTest()->getId() !== $testId))
-        {
-            return false;
-        }
-
-        return true;
-    }
 
     /**
      * @param Test $test

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Test;
 use AppBundle\Entity\User;
 use AppBundle\Helper\HashGenerator;
 
@@ -20,7 +21,7 @@ class UserService extends AbstractService
      * @param string $guestKey
      * @return User|null
      */
-    public function findByGuestKey(string $guestKey)
+    public function findByGuestKey($guestKey)
     {
         if (empty($guestKey)) {
             return null;
@@ -40,5 +41,34 @@ class UserService extends AbstractService
         $this->em->persist($user);
 
         return $user;
+    }
+
+    /**
+     * User can pass test in the following cases:
+     * - if she has a guest_key cookie
+     * - and if she has an active attempt
+     * - and if the active attempt's test_id equals to the current test
+     *
+     * @param Test $test
+     * @param User|null $user
+     * @return bool
+     */
+    public function canUserPassTest($user, Test $test)
+    {
+        if (empty($user)) {
+            return false;
+        }
+
+        $attemptRepo = $this->em->getRepository('AppBundle:Attempt');
+        $activeAttempt = $attemptRepo->findActiveAttempt($user);
+
+        if (
+            empty($activeAttempt)
+            or ($activeAttempt->getTest()->getId() !== $test->getId()))
+        {
+            return false;
+        }
+
+        return true;
     }
 }

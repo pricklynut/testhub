@@ -20,9 +20,27 @@ class AttemptRepository extends EntityRepository
     public function findActiveAttempt($user)
     {
         return $this->findOneBy([
-            'user' => $user,
-            'status' => Attempt::STATUS_UNDERWAY],
-            ['started' => 'desc']);
+                'user' => $user,
+                'status' => Attempt::STATUS_UNDERWAY
+            ],
+            ['started' => 'desc']
+        );
+    }
+
+    /**
+     * @param User $user
+     * @param Test $test
+     * @return null|object
+     */
+    public function findActiveAttemptByTest(User $user, Test $test)
+    {
+        return $this->findOneBy([
+                'user' => $user,
+                'test' => $test,
+                'status' => Attempt::STATUS_UNDERWAY,
+            ],
+            ['started' => 'desc']
+        );
     }
 
     /**
