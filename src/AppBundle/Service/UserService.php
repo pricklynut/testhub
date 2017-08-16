@@ -71,4 +71,14 @@ class UserService extends AbstractService
 
         return true;
     }
+
+    public function hasGuestKey($request)
+    {
+        if (empty($request->query->get('guest_key'))) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

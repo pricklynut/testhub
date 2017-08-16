@@ -291,5 +291,29 @@ class Test
         return $points;
     }
 
+    public function setShowAnswersString()
+    {
+        if ($this->getShowAnswers()) {
+            $this->setShowAnswers(self::SHOW_ANSWERS);
+        } else {
+            $this->setShowAnswers(self::NOT_SHOW_ANSWERS);
+        }
+    }
+
+    public function fixBrokenRelations()
+    {
+        foreach ($this->getQuestions() as $question) {
+            $question->setTest($this);
+            foreach ($question->getVariants() as $variant) {
+                $variant->setQuestion($question);
+                if ($variant->getIsCorrect()) {
+                    $variant->setIsCorrect("yes");
+                } else {
+                    $variant->setIsCorrect("no");
+                }
+            }
+        }
+    }
+
 }
 
