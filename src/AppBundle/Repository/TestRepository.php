@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Test;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
@@ -18,9 +19,15 @@ class TestRepository extends EntityRepository
      */
     public function getRecentTests(int $limit = 5)
     {
-        $dql = "SELECT test, tags FROM AppBundle\Entity\Test test
-                LEFT JOIN test.tags tags ORDER BY test.created DESC";
+        $dql = "SELECT test, tags
+                FROM AppBundle\Entity\Test test
+                LEFT JOIN test.tags tags
+                WHERE test.status = :status
+                ORDER BY test.created DESC";
         $query = $this->getEntityManager()->createQuery($dql);
+        $query->setParameters([
+            'status' => Test::STATUS_PUBLISHED,
+        ]);
         $query->setMaxResults($limit);
 
         return new Paginator($query, $fetchJoin = true);

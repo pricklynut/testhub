@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Test;
 use AppBundle\Helper\Pager;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
@@ -53,6 +54,8 @@ class TestService extends AbstractService
             ->select(['test', 'tags'])
             ->from('AppBundle:Test', 'test')
             ->leftJoin('test.tags', 'tags')
+            ->where('test.status = :status')
+            ->setParameter('status', Test::STATUS_PUBLISHED)
             ->orderBy('test.created', 'DESC')
             ->setFirstResult( ($page - 1) * $this->perPage )
             ->setMaxResults($this->perPage);

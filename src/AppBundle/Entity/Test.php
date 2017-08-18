@@ -19,6 +19,10 @@ class Test
 
     const NOT_SHOW_ANSWERS = 'no';
 
+    const STATUS_DRAFT = 'draft';
+
+    const STATUS_PUBLISHED = 'published';
+
     /**
      * @var Collection
      *
