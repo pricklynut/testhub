@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Test
 {
     const SHOW_ANSWERS = 'yes';
+
     const NOT_SHOW_ANSWERS = 'no';
 
     /**
@@ -101,6 +102,13 @@ class Test
     private $created;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string")
+     */
+    private $status;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -128,6 +136,22 @@ class Test
     }
 
     /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus(string $status)
+    {
+        $this->status = $status;
+    }
+
+    /**
      * @param Tag $tag
      */
     public function attachTag(Tag $tag)
@@ -141,14 +165,6 @@ class Test
     public function getAttempts(): Collection
     {
         return $this->attempts;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getQuestions(): Collection
-    {
-        return $this->questions;
     }
 
     /**
@@ -241,22 +257,6 @@ class Test
     }
 
     /**
-     * @return string
-     */
-    public function getShowAnswers()
-    {
-        return in_array($this->showAnswers, ["yes", "1"]);
-    }
-
-    /**
-     * @param string $showAnswers
-     */
-    public function setShowAnswers(string $showAnswers)
-    {
-        $this->showAnswers = $showAnswers;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getCreated(): \DateTime
@@ -291,6 +291,14 @@ class Test
         return $points;
     }
 
+    /**
+     * @return Collection
+     */
+    public function getQuestions(): Collection
+    {
+        return $this->questions;
+    }
+
     public function setShowAnswersString()
     {
         if ($this->getShowAnswers()) {
@@ -298,6 +306,22 @@ class Test
         } else {
             $this->setShowAnswers(self::NOT_SHOW_ANSWERS);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getShowAnswers()
+    {
+        return in_array($this->showAnswers, ["yes", "1"]);
+    }
+
+    /**
+     * @param string $showAnswers
+     */
+    public function setShowAnswers(string $showAnswers)
+    {
+        $this->showAnswers = $showAnswers;
     }
 
     public function fixBrokenRelations()

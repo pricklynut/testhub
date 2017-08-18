@@ -41,7 +41,7 @@ class Question
      *
      * @ORM\Column(name="type", type="string", nullable=false)
      */
-    private $type;
+    private $type = self::TYPE_STRING_TYPEIN;
 
     /**
      * @var integer
@@ -55,7 +55,7 @@ class Question
      *
      * @ORM\Column(name="`precision`", type="integer", nullable=true)
      */
-    private $precision;
+    private $precision = 0;
 
     /**
      * @var integer
