@@ -5,6 +5,7 @@ namespace AppBundle\Service;
 use AppBundle\Entity\Test;
 use AppBundle\Entity\User;
 use AppBundle\Helper\HashGenerator;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 class UserService extends AbstractService
 {
@@ -72,13 +73,20 @@ class UserService extends AbstractService
         return true;
     }
 
-    public function hasGuestKey($request)
+    public function checkIsUserAuthor(User $user = null, Test $test)
     {
-        if (empty($request->query->get('guest_key'))) {
+        if (empty($user) or $user->getId() != $test->getAuthor()->getId()) {
+            throw new AccessDeniedException("У вас нет прав на выполнение данного действия");
+        }
+    }
+
+    public function hasGuestKey($key)
+    {
+        if ( empty($key) ) {
             return false;
         }
 
-        return true;
+        return $this->userRepo->isGuestKeyExists($key);
     }
 
 }

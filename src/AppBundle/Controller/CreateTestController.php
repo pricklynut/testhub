@@ -8,7 +8,6 @@ use AppBundle\Entity\Variant;
 use AppBundle\Form\TestFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,19 +23,13 @@ class CreateTestController extends Controller
         $guestKey = $request->cookies->get('guest_key');
         $user = $this->get('user_service')->findByGuestKey($guestKey);
 
-        /* if (empty($user)) {
-            $user = $this->get('user_service')->createAndPersistUser();
-            $redirect->headers->setCookie(
-                new Cookie('guest_key', $user->getGuestKey(), time() + 3600*24*365)
-            );
-        } */
-
         $test = new Test();
         if (!empty($user)) {
             $test->assignAuthor($user);
         }
         $test->setCreated(new \DateTime());
         $test->setTimeLimit(0);
+        $test->setStatus(Test::STATUS_DRAFT);
 
         $question = new Question();
         $question->setTest($test);
@@ -65,11 +58,9 @@ class CreateTestController extends Controller
         $this->checkNotFound($test);
 
         $guestKey = $request->cookies->get('guest_key');
-        $user = $em->getRepository('AppBundle:User')->findOneBy(['guestKey' => $guestKey]);
+        $user = $this->get('user_service')->findByGuestKey($guestKey);
 
-        if ($user != $test->getAuthor()) {
-            throw new AccessDeniedException("У вас нет прав на выполнение данного действия");
-        }
+        $this->get('user_service')->checkIsUserAuthor($user, $test);
 
         return $this->createOrEdit($request, $test, 'edit');
     }
@@ -105,7 +96,8 @@ class CreateTestController extends Controller
             $test->setShowAnswersString();
             $test->fixBrokenRelations();
 
-            if (!$this->get('user_service')->hasGuestKey($request)) {
+            $guestKey = $request->cookies->get('guest_key');
+            if (!$this->get('user_service')->hasGuestKey($guestKey)) {
                 $user = $this->get('user_service')->createAndPersistUser();
                 $test->assignAuthor($user);
             }
@@ -117,16 +109,25 @@ class CreateTestController extends Controller
                 $this->generateUrl('test_edit', ['testId' => $test->getId()])
             );
 
-            if (!$this->get('user_service')->hasGuestKey($request)) {
+            if (!$this->get('user_service')->hasGuestKey($guestKey) and $action === 'create') {
                 $redirect->headers->setCookie(
                     new Cookie('guest_key', $user->getGuestKey(), time() + 3600*24*365)
                 );
             }
 
+            $this->addFlash(
+                'message',
+                ($action === 'create') ? 'Тест успешно создан' : 'Изменения сохранены'
+            );
+
             return $redirect;
         }
 
-        return $this->render('create-test/new.html.twig', [
+        $view = ($action === 'create')
+            ? 'create-test/new.html.twig'
+            : 'create-test/edit.html.twig';
+
+        return $this->render($view, [
             'test' => $test,
             'form' => $form->createView(),
         ]);

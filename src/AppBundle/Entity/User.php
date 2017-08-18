@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\Collection;
  * User
  *
  * @ORM\Table(name="users")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
 class User
 {

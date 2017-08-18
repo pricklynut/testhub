@@ -95,3 +95,7 @@ assetic:
             filters:
                 - cssrewrite
             output: css/bootstrap.min.css
+        test_edit_js:
+            inputs:
+                - "%kernel.root_dir%/Resources/js/test_edit.js"
+            output: js/test_edit.js
