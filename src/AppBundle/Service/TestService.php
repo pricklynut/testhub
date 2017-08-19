@@ -65,7 +65,7 @@ class TestService extends AbstractService
             if (empty($searchIds)) {
                 return null;
             }
-            $queryBuilder->where('test.id IN (:ids)')
+            $queryBuilder->andWhere('test.id IN (:ids)')
                 ->setParameter('ids', $searchIds);
         }
 
