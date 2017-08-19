@@ -3,3 +3,7 @@
 {% block h1 %}
     <h1>Создать новый тест</h1>
 {% endblock h1 %}
+
+{% block include_form %}
+    {% embed 'create-test/_form.html.twig' %}{% endembed %}
+{% endblock include_form %}

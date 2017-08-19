@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {{ parent() }}
+
+    <div class="wrapper container">
+        <div class="row">
+            <div class="content col-md-9 col-sm-8 col-xs-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <h1>Публикация теста</h1>
+                        <p>Тест успешно создан.</p>
+                        <p>Ссылка для прохождения теста:
+                            <a href="{{ path('test_preface', {"testId": test.id}) }}">{{ test.title }}</a>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}

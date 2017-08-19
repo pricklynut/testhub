@@ -225,6 +225,31 @@ class TestsController extends Controller
         ]);
     }
 
+    /**
+     * @param $testId
+     *
+     * @Route(
+     *     "/test/{testId}/publish",
+     *     name="test_publish",
+     *     requirements={"testId": "\d+"}
+     * )
+     */
+    public function publishAction($testId, Request $request)
+    {
+        $test = $this->get('test_service')->findById(intval($testId));
+
+        $this->checkNotFound($test);
+
+        $guestKey = $request->cookies->get('guest_key');
+        $user = $this->get('user_service')->findByGuestKey($guestKey);
+        $this->get('user_service')->checkIsUserAuthor($user, $test);
+
+        $test->setStatus(Test::STATUS_PUBLISHED);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->render('tests/publish.html.twig', ['test' => $test]);
+    }
+
     private function goToNextQuestionOrFinish(int $testId, int $nextQuestionNumber = null)
     {
         if ( empty($nextQuestionNumber) ) {

@@ -3,3 +3,12 @@
 {% block h1 %}
     <h1>Редактировать <em>"{{ test.title }}"</em></h1>
 {% endblock h1 %}
+
+{% block include_form %}
+    {% embed 'create-test/_form.html.twig' %}
+        {% block publish_button %}
+            <a class="btn btn-primary pull-right"
+               href="{{ path('test_publish', {"testId": test.id}) }}">Опубликовать</a>
+        {% endblock publish_button %}
+    {% endembed %}
+{% endblock include_form %}
