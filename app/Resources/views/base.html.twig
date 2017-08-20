@@ -37,6 +37,16 @@
             </nav>
         {% endblock %}
 
+        {% block footer %}
+            <nav class="navbar navbar-default navbar-fixed-bottom">
+                <div class="container">
+                    <p class="navbar-text">
+                        &copy; Designed by Pricklynut, 2017
+                    </p>
+                </div>
+            </nav>
+        {% endblock footer %}
+
         {% block javascripts %}
             {% javascripts 'js/jquery.min.js' 'js/bootstrap.min.js' %}
                 <script src="{{ asset(asset_url) }}"></script>
