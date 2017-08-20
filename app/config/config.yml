@@ -103,3 +103,8 @@ assetic:
             inputs:
                 - "%kernel.root_dir%/Resources/css/main.css"
             output: css/main.css
+        not_found_img:
+            inputs:
+                - "%kernel.root_dir%/Resources/img/monkey_not_found.jpg"
+            output: img/monkey_not_found.jpg
+

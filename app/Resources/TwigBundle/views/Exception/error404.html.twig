@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+
+<div class="wrapper container">
+    <div class="row">
+        <div class="content col-md-9 col-sm-8 col-xs-12">
+
+            <h1>Страница не найдена</h1>
+
+            <img src="{{ asset('img/monkey_not_found.jpg') }}"
+                 class="img-rounded"
+                 alt="sad_monkey">
+
+        </div>
+    </div>
+</div>
+
+{% endblock body %}
