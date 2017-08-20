@@ -89,14 +89,14 @@ class TestsController extends Controller
         );
 
         $guestKey = $request->cookies->get('guest_key');
+        $user = $this->get('user_service')->findByGuestKey($guestKey);
 
-        if (empty($guestKey)) {
+        if (empty($user)) {
             $user = $this->get('user_service')->createAndPersistUser();
             $response->headers->setCookie(
                 new Cookie('guest_key', $user->getGuestKey(), time() + 3600*24*365)
             );
         } else {
-            $user = $this->get('user_service')->findByGuestKey($guestKey);
             $this->get('attempt_service')->finishActiveAttempts($user);
         }
 
