@@ -99,3 +99,7 @@ assetic:
             inputs:
                 - "%kernel.root_dir%/Resources/js/test_edit.js"
             output: js/test_edit.js
+        main_css:
+            inputs:
+                - "%kernel.root_dir%/Resources/css/main.css"
+            output: css/main.css

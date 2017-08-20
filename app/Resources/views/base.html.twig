@@ -14,6 +14,10 @@
             {% stylesheets 'css/bootstrap.min.css' %}
                 <link rel="stylesheet" href="{{ asset(asset_url) }}">
             {% endstylesheets %}
+
+            {% stylesheets '@main_css' %}
+                <link rel="stylesheet" href="{{ asset(asset_url) }}">
+            {% endstylesheets %}
         {% endblock stylesheets %}
 
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">

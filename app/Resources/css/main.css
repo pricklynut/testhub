@@ -1,0 +1,4 @@
+/* Fix twbs fixed footer overlay */
+body {
+    padding-bottom: 70px;
+}
