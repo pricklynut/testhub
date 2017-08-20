@@ -48,6 +48,21 @@ class TestRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
+    public function getCountByTag($tagId)
+    {
+        $sql = "SELECT COUNT(test.id) FROM tags tag
+                LEFT JOIN test_to_tag relation ON relation.tag_id = tag.id
+                JOIN tests test ON relation.test_id = test.id
+                WHERE tag.id = :tagId";
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':tagId', $tagId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn();
+    }
+
     /**
      * @param int $testId
      * @return bool|string

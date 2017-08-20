@@ -10,7 +10,7 @@
                         <div class="tags">
                             {% for tag in item.tags %}
                                 <span class="tag-item">
-                                    <a href="{{ path('homepage') }}"
+                                    <a href="{{ path('tests_list', {'tagId': tag.id}) }}"
                                     >#{{ tag.name }}</a>
                                 </span>
                             {%  endfor %}

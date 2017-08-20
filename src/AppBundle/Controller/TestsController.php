@@ -26,9 +26,15 @@ class TestsController extends Controller
     {
         $page = $request->query->get('page', 1);
         $search = $request->query->get('search');
+        $tagId = $request->query->get('tagId');
 
-        $pager = $this->get('test_service')->createPager($page, $search);
-        $tests = $this->get('test_service')->findByPage($page, $search);
+        $tests = $this->get('test_service')->findByTagId($tagId);
+        if (empty($tests)) {
+            $tests = $this->get('test_service')->findByPhrase($page, $search);
+            $pager = $this->get('test_service')->createPagerForSearch($page, $search);
+        } else {
+            $pager = $this->get('test_service')->createPagerForTagSearch($page, $tagId);
+        }
 
         return $this->render('tests/list.html.twig', [
             'tests' => $tests,

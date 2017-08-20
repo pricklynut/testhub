@@ -30,9 +30,19 @@ class TestService extends AbstractService
      * @param string|null $search
      * @return Pager
      */
-    public function createPager(int $page, string $search = null)
+    public function createPagerForSearch(int $page, string $search = null)
     {
         $totalPages = $this->testRepo->getTotalCount($search);
+
+        $pager = new Pager($page, $totalPages);
+        $pager->setPerPage($this->perPage);
+
+        return $pager;
+    }
+
+    public function createPagerForTagSearch(int $page, $tagId)
+    {
+        $totalPages = $this->testRepo->getCountByTag($tagId);
 
         $pager = new Pager($page, $totalPages);
         $pager->setPerPage($this->perPage);
@@ -47,7 +57,7 @@ class TestService extends AbstractService
      * @param string|null $search
      * @return Paginator|null
      */
-    public function findByPage(int $page, string $search = null)
+    public function findByPhrase(int $page, string $search = null)
     {
         $queryBuilder = $this->em
             ->createQueryBuilder()
@@ -70,6 +80,21 @@ class TestService extends AbstractService
         }
 
         return new Paginator($queryBuilder, $fetchJoin = true);
+    }
+
+    public function findByTagId($tagId)
+    {
+        if (empty($tagId)) {
+            return null;
+        }
+
+        $tag = $this->em->getRepository('AppBundle:Tag')->find($tagId);
+
+        if (empty($tag)) {
+            return null;
+        }
+
+        return $tag->getTests();
     }
 
     public function getQuestionsCount(int $testId)
