@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Question;
+use AppBundle\Entity\Tag;
 use AppBundle\Entity\Test;
 use AppBundle\Entity\Variant;
 use AppBundle\Form\TestFormType;
@@ -30,6 +31,9 @@ class CreateTestController extends Controller
         $test->setCreated(new \DateTime());
         $test->setTimeLimit(0);
         $test->setStatus(Test::STATUS_DRAFT);
+
+        $tag = new Tag();
+        $tag->attachToTest($test);
 
         $question = new Question();
         $question->setTest($test);
@@ -63,20 +67,6 @@ class CreateTestController extends Controller
         $this->get('user_service')->checkIsUserAuthor($user, $test);
 
         return $this->createOrEdit($request, $test, 'edit');
-    }
-
-    /**
-     * @param $testId
-     *
-     * @Route(
-     *     "test/{testId}/publish",
-     *     name="test_publish",
-     *     requirements={"testId": "\d+"}
-     * )
-     */
-    public function actionPublish($testId)
-    {
-        // publish
     }
 
     /**

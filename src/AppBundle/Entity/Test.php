@@ -124,7 +124,11 @@ class Test
     /**
      * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Tag", inversedBy="tests")
+     * @ORM\ManyToMany(
+     *     targetEntity="AppBundle\Entity\Tag",
+     *     inversedBy="tests",
+     *     cascade={"persist"}
+     * )
      * @ORM\JoinTable(name="test_to_tag")
      */
     private $tags;

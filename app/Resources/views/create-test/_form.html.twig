@@ -2,6 +2,29 @@
 
 {{ form_row(form.title) }}
 {{ form_row(form.description) }}
+
+
+<h3>Теги</h3>
+
+<ul class="tags-list list-unstyled"
+    data-prototype-tag="{{
+        form_widget(form.tags.vars.prototype)|e('html_attr')
+    }}">
+
+    {% for tag in form.tags %}
+        <li class="tag-item">
+            {{ form_row(tag.name) }}
+        </li>
+    {% endfor %}
+
+    <div class="clearfix">
+        <button class="btn btn-default pull-right add-tag-btn">
+            + Добавить тег
+        </button>
+    </div>
+
+</ul>
+
 {{ form_row(form.timeLimit) }}
 {{ form_row(form.showAnswers) }}
 
@@ -11,11 +34,11 @@
         <h3>Вопросы</h3>
         <ol class="questions-list"
             data-prototype-variant="{{
-                            form_widget(form.questions.vars.prototype.variants.vars.prototype)|e('html_attr')
-                            }}"
+                form_widget(form.questions.vars.prototype.variants.vars.prototype)|e('html_attr')
+            }}"
             data-prototype-question="{{
-                                form_widget(form.questions.vars.prototype)|e('html_attr')
-                            }}">
+                form_widget(form.questions.vars.prototype)|e('html_attr')
+            }}">
             {% for question in form.questions %}
             <li class="question-item" data-serial-number="{{ loop.index0 }}">
                 {{ form_row(question.question) }}

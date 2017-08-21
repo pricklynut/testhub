@@ -19,7 +19,7 @@
                             до <strong>{{ totalPoints }}</strong> баллов.
                     </p>
 
-                    {% if test.timeLimit is not empty %}
+                    {% if test.timeLimit > 0 %}
                         <p>На весь тест дается
                             <strong>{{ test.timeLimit }}</strong> минут.
                         </p>

@@ -16,6 +16,11 @@ $(function () {
         addVariant(currentList, $(this));
     });
 
+    $(".add-tag-btn").on('click', function (e) {
+        e.preventDefault();
+        addTag($('.tags-list'), $(this));
+    });
+
     function addQuestion(list, button) {
         var prototype = list.data("prototype-question");
         var index = list.data('index');
@@ -50,4 +55,14 @@ $(function () {
         var newFormItem = $('<li class="variant-item"></li>').append(newForm);
         button.before(newFormItem);
     }
+
+    function addTag(list, button) {
+        var prototype = list.data("prototype-tag");
+        var index = list.find(".tag-item").length;
+
+        var newForm = prototype.replace(/__tag_number__/g, index);
+        var newFormItem = $('<li class="tag-item"></li>').append(newForm);
+        button.before(newFormItem);
+    }
+
 });

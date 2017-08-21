@@ -44,6 +44,14 @@ class TestFormType extends AbstractType
             'required' => false,
             'label' => 'Показывать правильные ответы после прохождения',
         ]);
+
+        $builder->add('tags', CollectionType::class, [
+            'label' => false,
+            'required' => true,
+            'entry_type' => TagFormType::class,
+            'allow_add' => true,
+            'prototype_name' => '__tag_number__',
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
