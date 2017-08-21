@@ -82,19 +82,26 @@ class TestService extends AbstractService
         return new Paginator($queryBuilder, $fetchJoin = true);
     }
 
-    public function findByTagId($tagId)
+    public function findByTagId(int $page, $tagId)
     {
         if (empty($tagId)) {
             return null;
         }
 
-        $tag = $this->em->getRepository('AppBundle:Tag')->find($tagId);
+        $queryBuilder = $this->em
+            ->createQueryBuilder();
+        $queryBuilder
+            ->select(['test', 'tags'])
+            ->from('AppBundle:Test', 'test')
+            ->leftJoin('test.tags', 'tags')
+            ->where('test.status = :status')
+            ->andWhere($queryBuilder->expr()->eq('tags.id', $tagId))
+            ->setParameter('status', Test::STATUS_PUBLISHED)
+            ->orderBy('test.created', 'DESC')
+            ->setFirstResult( ($page - 1) * $this->perPage )
+            ->setMaxResults($this->perPage);
 
-        if (empty($tag)) {
-            return null;
-        }
-
-        return $tag->getTests();
+        return new Paginator($queryBuilder, $fetchJoin = true);
     }
 
     public function getQuestionsCount(int $testId)

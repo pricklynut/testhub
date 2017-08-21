@@ -28,7 +28,7 @@ class TestsController extends Controller
         $search = $request->query->get('search');
         $tagId = $request->query->get('tagId');
 
-        $tests = $this->get('test_service')->findByTagId($tagId);
+        $tests = $this->get('test_service')->findByTagId($page, $tagId);
         if (empty($tests)) {
             $tests = $this->get('test_service')->findByPhrase($page, $search);
             $pager = $this->get('test_service')->createPagerForSearch($page, $search);
