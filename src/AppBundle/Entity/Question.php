@@ -239,6 +239,18 @@ class Question
     /**
      * @return array
      */
+    public function getShuffledVariants()
+    {
+        $items = $this->variants->getValues();
+
+        shuffle($items);
+
+        return $items;
+    }
+
+    /**
+     * @return array
+     */
     public function getCorrectVariants()
     {
         $correctVariants = [];
@@ -258,7 +270,7 @@ class Question
     public function getVariantsList()
     {
         $list = [];
-        $models = $this->getVariants();
+        $models = $this->getShuffledVariants();
 
         foreach ($models as $model) {
             $list[$model->getAnswer()] = $model->getAnswer();
