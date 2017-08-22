@@ -3,13 +3,13 @@ TestHub
 
 TestHub is a service which allows you to create and pass tests.
 
-Written in PHP on Symfony 3 framework.
+Written in PHP with Symfony 3 framework.
 
 Installation and configuration
 ------------------------------
 
 Requirements:
-  * linux os (in my case ubuntu 16.04)
+  * linux os
   * php ^7.0
   * web server apache ^2.4
   * dbms postgresql ^9.5 or mysql ^5.6 (innodb fulltext indexes)
@@ -26,6 +26,7 @@ Installation steps:
         ```
   1. In `app/config/parameters.yml` set your db connection settings
   1. Run migrations `$ php bin/console doctrine:migrations:migrate -n`
+  1. Load assets with `$ php bin/console assetic:dump`
   1. Optionally load test fixtures `$ php bin/console doctrine:fixtures:load -n`
   
 Configuration (optional).
@@ -53,13 +54,13 @@ Configuration (optional).
         ```
     * in `app/config/parameters.yml` change db setting
     * only for production, change database driver in `app/config/parameters_prod.php`
-    * Mysql 5.7 by default goes with unacceptable settings, which causes errors. For example, in attempts table we have
+    * Mysql 5.7 by default needs some tweaks to work properly. For example, in attempts table we have
     two timestamp columns, and it crushes with "invalid default value".
     See [mysql bugtracker](https://bugs.mysql.com/bug.php?id=80163).
     In another case, app crushes with "cannot order by value that not presented in select list"
     [doctrine issue](https://github.com/doctrine/doctrine2/issues/5622)
-    To avoid that mistakes, remove "ONLY_FULL_GROUP_BY,NO_ZERO_IN_DATE,NO_ZERO_DATE" from sql_mode setting
+    To avoid that errors, remove "ONLY_FULL_GROUP_BY,NO_ZERO_IN_DATE,NO_ZERO_DATE" from sql_mode setting
     in `/etc/mysql/my.cnf`. I added equivalent command via migration, but it will work only for current session
-    (i.e. while you restart mysql).
+    (i.e. until you restart mysql).
     To avoid problems with utf-8, you should set default character set for server in my.cnf.
     
