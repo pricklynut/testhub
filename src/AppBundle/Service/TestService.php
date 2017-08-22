@@ -119,4 +119,29 @@ class TestService extends AbstractService
         return $this->testRepo->find($testId);
     }
 
+    public function removeDeletedRelations($oldQuestions, Test $newTest)
+    {
+        foreach ($oldQuestions as $oldQuestion) {
+            if (false === $newTest->getQuestions()->contains($oldQuestion)) {
+
+                $oldQuestion->setTest(null);
+                $this->em->persist($oldQuestion);
+
+            } else {
+
+                $newQuestions = $newTest->getQuestions()->toArray();
+                $index = array_search($oldQuestion, $newQuestions);
+                $currentQuestion = $newQuestions[$index];
+
+                foreach ($oldQuestion->getVariants() as $oldVariant) {
+                    if (false === $currentQuestion->getVariants()->contains($oldVariant)) {
+                        $oldVariant->setQuestion(null);
+                        $this->em->persist($oldVariant);
+                    }
+                }
+
+            }
+        }
+    }
+
 }

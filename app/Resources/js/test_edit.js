@@ -16,6 +16,11 @@ $(function () {
         addVariant(currentList, $(this));
     });
 
+    questionsList.on('click', '.remove-variant-btn', function (e) {
+        e.preventDefault();
+        $(this).parents('.variant-container').remove();
+    });
+
     $(".add-tag-btn").on('click', function (e) {
         e.preventDefault();
         addTag($('.tags-list'), $(this));
@@ -56,9 +61,11 @@ $(function () {
         var newForm = prototype.replace(/__variant_number__/g, index);
         var questionNumber = list.parents(".question-item").data("serial-number");
         newForm = newForm.replace(/__question_number__/g, questionNumber);
+        var variantContainer = $($('#single-variant-template').html());
+        var li = variantContainer.find('.variant-item');
+        li.append(newForm);
 
-        var newFormItem = $('<li class="variant-item"></li>').append(newForm);
-        button.before(newFormItem);
+        button.before(variantContainer);
     }
 
     function addTag(list, button) {

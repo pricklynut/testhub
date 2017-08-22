@@ -55,10 +55,18 @@
 
                         <ol class="variants-list">
                             {% for variant in question.variants %}
-                            <li class="variant-item">
-                                {{ form_row(variant.answer) }}
-                                {{ form_row(variant.isCorrect) }}
-                            </li>
+                                <div class="variant-container">
+                                    <div class="col-md-10">
+                                        <li class="variant-item">
+                                            {{ form_row(variant.answer) }}
+                                            {{ form_row(variant.isCorrect) }}
+                                        </li>
+                                    </div>
+                                    <div class="clearfix">
+                                        <button class="btn btn-default btn-sm
+                                    pull-right remove-variant-btn">&times; удалить</button>
+                                    </div>
+                                </div>
                             {% endfor %}
 
                             <div class="clearfix">
@@ -74,8 +82,8 @@
             </li>
             {% endfor %}
 
-            <div class="clearfix">
-                <button class="btn btn-default pull-right add-question-btn">
+            <div class="center-block" style="width: 20%; margin: auto">
+                <button class="btn btn-default add-question-btn">
                     + Добавить вопрос
                 </button>
             </div>

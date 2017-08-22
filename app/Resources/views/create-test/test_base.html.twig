@@ -55,6 +55,18 @@
         </li>
     </script>
 
+    <script type="text/template" id="single-variant-template">
+        <div class="variant-container">
+            <div class="col-md-10">
+                <li class="variant-item"></li>
+            </div>
+            <div class="clearfix">
+                <button class="btn btn-default btn-sm
+                               pull-right remove-variant-btn">&times; удалить</button>
+            </div>
+        </div>
+    </script>
+
     {% javascripts '@test_edit_js' %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}

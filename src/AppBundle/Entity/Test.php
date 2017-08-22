@@ -204,6 +204,11 @@ class Test
         $this->questions[] = $question;
     }
 
+    public function removeQuestion(Question $question)
+    {
+        $this->questions->removeElement($question);
+    }
+
     /**
      * @param User $author
      */

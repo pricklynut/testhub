@@ -36,6 +36,7 @@ class TestFormType extends AbstractType
         $builder->add('questions', CollectionType::class, [
             'entry_type' => QuestionFormType::class,
             'allow_add' => true,
+            'allow_delete' => true,
             'label' => false,
             'prototype_name' => '__question_number__',
         ]);

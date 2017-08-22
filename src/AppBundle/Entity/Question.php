@@ -131,6 +131,11 @@ class Question
         $this->variants[] = $variant;
     }
 
+    public function removeVariant(Variant $variant)
+    {
+        $this->variants->removeElement($variant);
+    }
+
     /**
      * @return int
      */
@@ -214,9 +219,12 @@ class Question
     /**
      * @param Test $test
      */
-    public function setTest(Test $test)
+    public function setTest(Test $test = null)
     {
-        $test->addQuestion($this);
+        if ($test !== null) {
+            $test->addQuestion($this);
+        }
+
         $this->test = $test;
     }
 

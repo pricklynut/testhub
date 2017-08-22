@@ -7,6 +7,7 @@ use AppBundle\Entity\Tag;
 use AppBundle\Entity\Test;
 use AppBundle\Entity\Variant;
 use AppBundle\Form\TestFormType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -76,6 +77,11 @@ class CreateTestController extends Controller
      */
     private function createOrEdit(Request $request, Test $test, $action)
     {
+        $oldQuestions = new ArrayCollection();
+        foreach ($test->getQuestions() as $oldQuestion) {
+            $oldQuestions->add($oldQuestion);
+        }
+
         $form = $this->createForm(TestFormType::class, $test);
 
         $form->handleRequest($request);
@@ -85,6 +91,7 @@ class CreateTestController extends Controller
             $test = $form->getData();
             $test->setShowAnswersString();
             $test->fixBrokenRelations();
+            $this->get('test_service')->removeDeletedRelations($oldQuestions, $test);
 
             $guestKey = $request->cookies->get('guest_key');
             if (!$this->get('user_service')->hasGuestKey($guestKey)) {

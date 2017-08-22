@@ -23,6 +23,7 @@ class QuestionFormType extends AbstractType
         $builder->add('variants', CollectionType::class, [
             'entry_type' => VariantFormType::class,
             'allow_add' => true,
+            'allow_delete' => true,
             'label' => false,
             'prototype_name' => '__variant_number__',
             'by_reference' => false,

@@ -60,9 +60,12 @@ class Variant
     /**
      * @param Question $question
      */
-    public function setQuestion(Question $question)
+    public function setQuestion(Question $question = null)
     {
-        $question->addVariant($this);
+        if ($question !== null) {
+            $question->addVariant($this);
+        }
+
         $this->question = $question;
     }
 
