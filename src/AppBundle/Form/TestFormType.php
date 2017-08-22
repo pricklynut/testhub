@@ -50,6 +50,7 @@ class TestFormType extends AbstractType
             'required' => true,
             'entry_type' => TagFormType::class,
             'allow_add' => true,
+            'allow_delete' => true,
             'prototype_name' => '__tag_number__',
         ]);
     }

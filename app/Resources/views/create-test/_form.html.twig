@@ -12,8 +12,9 @@
     }}">
 
     {% for tag in form.tags %}
-        <li class="tag-item">
-            {{ form_row(tag.name) }}
+        <li class="tag-item clearfix">
+            <div class="col-md-10">{{ form_row(tag.name) }}</div>
+            <button class="btn btn-default btn-sm pull-right remove-tag-btn">&times; удалить</button>
         </li>
     {% endfor %}
 

@@ -48,6 +48,13 @@
 
     </script>
 
+    <script type="text/template" id="tags-template">
+        <li class="tag-item clearfix">
+            <div class="col-md-10 input-wrapper"></div>
+            <button class="btn btn-default btn-sm pull-right remove-tag-btn">&times; удалить</button>
+        </li>
+    </script>
+
     {% javascripts '@test_edit_js' %}
         <script src="{{ asset_url }}"></script>
     {% endjavascripts %}

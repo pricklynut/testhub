@@ -167,6 +167,11 @@ class Test
         $this->tags[] = $tag;
     }
 
+    public function removeTag(Tag $tag)
+    {
+        $this->tags->removeElement($tag);
+    }
+
     /**
      * @return Collection
      */
