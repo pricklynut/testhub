@@ -119,6 +119,11 @@ class TestService extends AbstractService
         return $this->testRepo->find($testId);
     }
 
+    public function getTagById($tagId)
+    {
+        return $this->em->getRepository('AppBundle:Tag')->find($tagId);
+    }
+
     public function removeDeletedRelations($oldQuestions, Test $newTest)
     {
         foreach ($oldQuestions as $oldQuestion) {

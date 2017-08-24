@@ -11,7 +11,12 @@
                 <form action="">
                     <div class="form-group">
                         <input type="text" name="search" class="form-control"
-                               placeholder="Название или тема..." value="{{ search }}">
+                               placeholder="Название или тема..."
+                               value="{% if selectedTag is not empty %}{{
+                                        selectedTag.name
+                                      }}{% else %}{{
+                                        search
+                                      }}{% endif %}">
                     </div>
                 </form>
 
@@ -21,6 +26,10 @@
                     <div class="panel panel-default">
                         <div class="panel-body bg-warning">Ничего не найдено</div>
                     </div>
+                {% endif %}
+
+                {% if search is not empty or selectedTag is not empty %}
+                    <a href="{{ path('tests_list') }}">&larr; вернуться</a>
                 {% endif %}
 
                 {% if pager.hasPagination %}
