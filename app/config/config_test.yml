@@ -14,3 +14,17 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+doctrine:
+    dbal:
+        driver: pdo_mysql
+        host: localhost
+        dbname: testhub_testsdb
+        user: pricklynut
+        password: null
+
+doctrine_migrations:
+    dir_name: "%kernel.root_dir%/Migrations/Mysql"
+    namespace: App\Migrations\Mysql
+    table_name: migration_versions
+    name: Application Migrations
