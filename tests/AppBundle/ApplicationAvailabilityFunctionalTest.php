@@ -34,6 +34,31 @@ class ApplicationAvailabilityFunctionalTest extends WebTestCase
         $this->assertTrue($client->getResponse()->isSuccessful());
     }
 
+    public function testTestsListPageIsSuccessful()
+    {
+        $client = self::createClient();
+        $crawler = $client->request('GET', '/tests');
+
+        $items = $crawler->filter('.test-item');
+
+        $this->assertGreaterThan(0, $items->count());
+        $this->assertEquals($items->count(), $items->filter('.title')->count());
+        $this->assertTrue($client->getResponse()->isSuccessful());
+    }
+
+    public function testTestsListPageWithNotFoundSearch()
+    {
+        $client = self::createClient();
+        $crawler = $client->request('GET', '/tests?search=loremipsumabracadabra');
+
+        $items = $crawler->filter('.test-item');
+        $flashNotFound = $crawler->filter('.bg-warning');
+
+        $this->assertEquals(0, $items->count());
+        $this->assertEquals(1, $flashNotFound->count());
+        $this->assertTrue($client->getResponse()->isSuccessful());
+    }
+
     protected static function runCommand($command)
     {
         $command = sprintf('%s -n --quiet', $command);
