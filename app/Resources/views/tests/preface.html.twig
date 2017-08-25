@@ -44,7 +44,7 @@
                 {% if activeAttempt is not empty %}
                     <a href="{{ path(
                             'test_question',
-                            {testId: test.id, serialNumber: nextQuestionNumber}
+                            {testId: activeAttempt.test.id, serialNumber: nextQuestionNumber}
                         ) }}"
                        class="btn btn-default pull-left">&laquo; Продолжить</a>
                 {% endif %}
