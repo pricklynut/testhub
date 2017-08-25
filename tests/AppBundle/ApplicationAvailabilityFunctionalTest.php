@@ -4,6 +4,7 @@ namespace Tests\AppBundle;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Console\Input\StringInput;
 
 class ApplicationAvailabilityFunctionalTest extends WebTestCase
@@ -81,6 +82,28 @@ class ApplicationAvailabilityFunctionalTest extends WebTestCase
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
 
         return $client;
+    }
+
+    /**
+     * @depends testStartAttemptReturnRedirect
+     */
+    public function testQuestionPageWhenAuthorizedIsSuccessful($client)
+    {
+        $cookieSetInPreviousAction = $client->getCookieJar()->get('guest_key');
+        $this->assertGreaterThan(0, strlen($cookieSetInPreviousAction));
+
+        $crawler = $client->request('GET', '/test/8/question/1');
+
+        $this->assertGreaterThan(0, $crawler->filter('input')->count());
+        $this->assertTrue($client->getResponse()->isSuccessful());
+    }
+
+    public function testQuestionPageWhenUnauthorizedReturnRedirect()
+    {
+        $client = self::createClient();
+        $client->request('GET', '/test/8/question/1');
+
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
     }
 
     protected static function runCommand($command)
