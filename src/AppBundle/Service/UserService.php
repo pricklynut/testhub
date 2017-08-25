@@ -5,7 +5,7 @@ namespace AppBundle\Service;
 use AppBundle\Entity\Test;
 use AppBundle\Entity\User;
 use AppBundle\Helper\HashGenerator;
-use Symfony\Component\Finder\Exception\AccessDeniedException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class UserService extends AbstractService
 {
@@ -76,7 +76,7 @@ class UserService extends AbstractService
     public function checkIsUserAuthor(User $user = null, Test $test)
     {
         if (empty($user) or $user->getId() != $test->getAuthor()->getId()) {
-            throw new AccessDeniedException("У вас нет прав на выполнение данного действия");
+            throw new AccessDeniedHttpException("У вас нет прав на выполнение данного действия");
         }
     }
 
