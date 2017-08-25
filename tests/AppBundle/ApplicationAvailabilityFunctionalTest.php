@@ -4,6 +4,7 @@ namespace Tests\AppBundle;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Console\Input\StringInput;
 
 class ApplicationAvailabilityFunctionalTest extends WebTestCase
@@ -129,6 +130,32 @@ class ApplicationAvailabilityFunctionalTest extends WebTestCase
     public function testResultPageIsSuccessful($client)
     {
         $client->request('GET', '/test/8/result');
+
+        $this->assertTrue($client->getResponse()->isSuccessful());
+    }
+
+    public function testCreateTestPageIsSuccessful()
+    {
+        $client = self::createClient();
+        $client->request('GET', '/test/new');
+
+        $this->assertTrue($client->getResponse()->isSuccessful());
+    }
+
+    public function testEditTestPageIsForbiddenWhenNoPermissions()
+    {
+        $client = self::createClient();
+        $client->request('GET', '/test/8/edit');
+
+        $this->assertEquals(403, $client->getResponse()->getStatusCode());
+    }
+
+    public function testEditTestPageIsSuccessfulWhenUserIsAuthor()
+    {
+        $client = self::createClient();
+        $cookie = new Cookie('guest_key', 'qwerty12345');
+        $client->getCookieJar()->set($cookie);
+        $client->request('GET', '/test/8/edit');
 
         $this->assertTrue($client->getResponse()->isSuccessful());
     }
