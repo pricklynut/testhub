@@ -303,7 +303,7 @@ class TestsController extends Controller
     /**
      * @param Test $test
      */
-    private function checkNotFound(Test $test)
+    private function checkNotFound(Test $test = null)
     {
         if (empty($test)) {
             throw $this->createNotFoundException('Тест не найден');
