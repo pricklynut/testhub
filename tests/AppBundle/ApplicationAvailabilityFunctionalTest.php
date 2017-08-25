@@ -73,6 +73,16 @@ class ApplicationAvailabilityFunctionalTest extends WebTestCase
         $this->assertTrue($client->getResponse()->isSuccessful());
     }
 
+    public function testStartAttemptReturnRedirect()
+    {
+        $client = self::createClient();
+        $client->request('GET', '/test/8/start');
+
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+
+        return $client;
+    }
+
     protected static function runCommand($command)
     {
         $command = sprintf('%s -n --quiet', $command);
