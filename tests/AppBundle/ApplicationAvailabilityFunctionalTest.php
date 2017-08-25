@@ -4,7 +4,6 @@ namespace Tests\AppBundle;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Console\Input\StringInput;
 
 class ApplicationAvailabilityFunctionalTest extends WebTestCase
@@ -96,6 +95,8 @@ class ApplicationAvailabilityFunctionalTest extends WebTestCase
 
         $this->assertGreaterThan(0, $crawler->filter('input')->count());
         $this->assertTrue($client->getResponse()->isSuccessful());
+
+        return $client;
     }
 
     public function testQuestionPageWhenUnauthorizedReturnRedirect()
@@ -104,6 +105,32 @@ class ApplicationAvailabilityFunctionalTest extends WebTestCase
         $client->request('GET', '/test/8/question/1');
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * @param $client
+     *
+     * @depends testQuestionPageWhenAuthorizedIsSuccessful
+     */
+    public function testFinishAttemptPageIsSuccessful($client)
+    {
+        $client->request('GET', '/test/8/finish');
+
+        $this->assertTrue($client->getResponse()->isSuccessful());
+
+        return $client;
+    }
+
+    /**
+     * @param $client
+     *
+     * @depends testFinishAttemptPageIsSuccessful
+     */
+    public function testResultPageIsSuccessful($client)
+    {
+        $client->request('GET', '/test/8/result');
+
+        $this->assertTrue($client->getResponse()->isSuccessful());
     }
 
     protected static function runCommand($command)
