@@ -138,7 +138,7 @@ class Pager
     public function getLastPage()
     {
         if ($this->getCurrentPage() <= $this->getLinksOnPage()) {
-            return $this->getTotalPages();
+            return $this->getLinksOnPage();
         }
 
         if (
