@@ -46,7 +46,7 @@ class TestRepositoryTest extends AbstractRepository
     {
         $searchString = "хирагана";
         $ids = self::$testRepo->searchIds($searchString);
-        
+
         $this->assertEquals(1, count($ids));
     }
 
