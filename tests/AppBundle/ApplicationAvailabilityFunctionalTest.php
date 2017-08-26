@@ -48,8 +48,6 @@ class ApplicationAvailabilityFunctionalTest extends AbstractWebTestCaseWithFixtu
         $client = self::createClient();
         $crawler = $client->request('GET', '/test/8/preface');
 
-        $this->assertGreaterThan(0, $crawler->filter('h1')->count());
-
         $startTestButton = $crawler->filter('.buttons a')->last();
         $this->assertContains('Начать тест', $startTestButton->text());
         $this->assertEquals('/test/8/start', $startTestButton->attr('href'));
